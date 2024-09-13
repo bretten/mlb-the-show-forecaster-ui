@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables file
+*.env
+!.env.example
+
+# Build info
+*.tsbuildinfo

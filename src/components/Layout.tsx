@@ -3,6 +3,7 @@ import {Route, Routes} from "react-router-dom";
 import {Jobs} from "../pages/Jobs.tsx";
 import {Data} from "../pages/Data.tsx";
 import {Login} from "../pages/Login.tsx";
+import {RequireAuth} from "./auth/RequireAuth.tsx";
 
 /**
  * Represents the Layout of the application
@@ -18,8 +19,8 @@ export const Layout = () => {
             </div>
             <div>
                 <Routes>
-                    <Route path="/" element={<Jobs/>}/>
-                    <Route path="/data" element={<Data/>}/>
+                    <Route path="/" element={<RequireAuth><Jobs/></RequireAuth>}/>
+                    <Route path="/data" element={<RequireAuth><Data/></RequireAuth>}/>
                     <Route path="/login" element={<Login/>}/>
                 </Routes>
             </div>
