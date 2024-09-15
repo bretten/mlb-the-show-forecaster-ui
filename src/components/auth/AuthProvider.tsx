@@ -40,6 +40,8 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             method: 'POST'
         });
         if (response.ok) {
+            setUsername('');
+            setRole('');
             setIsAuthenticated(false);
             logoutSuccessCallback();
         }

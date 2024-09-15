@@ -15,3 +15,7 @@ export interface AuthContextType {
  * Context for the currently authenticated user. Provides authorization information
  */
 export const AuthContext = React.createContext<AuthContextType>(null!);
+
+export const useAuth = () => {
+    return React.useContext(AuthContext);
+}

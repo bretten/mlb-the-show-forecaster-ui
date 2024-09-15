@@ -1,4 +1,4 @@
-import {AuthContext} from "../../contexts/AuthContext.ts";
+import {useAuth} from "../../contexts/AuthContext.ts";
 import {Navigate, useLocation} from "react-router-dom";
 import React from "react";
 
@@ -8,7 +8,7 @@ import React from "react";
  * @constructor
  */
 export const RequireAuth = ({children}: { children: React.ReactNode }) => {
-    const auth = React.useContext(AuthContext);
+    const auth = useAuth();
     const location = useLocation();
 
     if (!auth.isAuthenticated) {
