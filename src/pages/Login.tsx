@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import {AuthContext} from "../contexts/AuthContext.ts";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Box, FormControl, Input, InputLabel} from "@mui/material";
+import {Alert, Box, FormControl, Input, InputLabel} from "@mui/material";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
@@ -24,6 +24,7 @@ export const Login = () => {
     const [error, setError] = useState('');
 
     const handleLogin = async (event: React.FormEvent) => {
+        setError("");
         event.preventDefault();
 
         login(username, password, () => {
@@ -45,13 +46,12 @@ export const Login = () => {
                 p: 1.5,
             }}>
 
-
-            <div>
-                {error && <p style={{color: 'red'}}>{error}</p>}
-            </div>
-
             <Stack spacing={1} direction="column" sx={{mb: 2}}>
                 <h2>Login</h2>
+                <div>
+                    {error && <Alert severity="error">{error}</Alert>}
+                </div>
+
                 <Divider/>
                 <FormControl variant="standard">
                     <InputLabel htmlFor="username">Username</InputLabel>
