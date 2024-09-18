@@ -1,6 +1,6 @@
 import {useAuth} from "../../contexts/AuthContext.ts";
-import {Navigate, useLocation} from "react-router-dom";
-import React from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+import React, {useEffect, useState} from "react";
 
 /**
  * Component that forces nested elements to require authentication
@@ -10,10 +10,16 @@ import React from "react";
 export const RequireAuth = ({children}: { children: React.ReactNode }) => {
     const auth = useAuth();
     const location = useLocation();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
 
-    if (!auth.isAuthenticated) {
-        return <Navigate to="/login" state={{from: location}} replace/>;
-    }
+    useEffect(() => {
+        auth.verify(() => {
+            setIsAuthenticated(true);
+        }, () => {
+            navigate("/login", {replace: true, state: {from: location}});
+        });
+    }, [auth, isAuthenticated, location, navigate]);
 
-    return children;
+    return isAuthenticated ? children : <h3>Loading</h3>;
 }

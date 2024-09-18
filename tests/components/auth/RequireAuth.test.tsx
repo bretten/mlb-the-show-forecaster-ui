@@ -38,6 +38,9 @@ describe('RequireAuth', () => {
             role: 'Admins',
             login: vi.fn(),
             logout: vi.fn(),
+            verify: (verifySuccessCallback: VoidFunction) => {
+                verifySuccessCallback();
+            }
         };
 
         await act(async () => {
@@ -63,6 +66,9 @@ describe('RequireAuth', () => {
             role: 'Admins',
             login: vi.fn(),
             logout: vi.fn(),
+            verify: (_verifySuccessCallback: VoidFunction, verifyFailedCallback: VoidFunction) => {
+                verifyFailedCallback();
+            }
         };
 
         await act(async () => {
