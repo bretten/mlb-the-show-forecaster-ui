@@ -9,6 +9,7 @@ export interface AuthContextType {
     role: string;
     login: (username: string, password: string, loginSuccessCallback: VoidFunction, loginFailedCallback: VoidFunction) => void;
     logout: (logoutSuccessCallback: VoidFunction) => void;
+    verify: (verifySuccessCallback: VoidFunction, verifyFailedCallback: VoidFunction) => void;
 }
 
 /**
