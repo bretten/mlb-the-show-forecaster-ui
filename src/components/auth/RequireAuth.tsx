@@ -1,7 +1,6 @@
 import {useAuth} from "../../contexts/AuthContext.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {HourglassBottomRounded} from "@mui/icons-material";
 
 /**
  * Component that forces nested elements to require authentication
@@ -14,8 +13,6 @@ export const RequireAuth = ({children}: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
 
-    setIsAuthenticated(auth.isAuthenticated);
-
     useEffect(() => {
         auth.verify(() => {
             setIsAuthenticated(true);
@@ -24,6 +21,5 @@ export const RequireAuth = ({children}: { children: React.ReactNode }) => {
         });
     }, [auth, isAuthenticated, location, navigate]);
 
-    return isAuthenticated ? children : <HourglassBottomRounded/>;
-
+    return isAuthenticated ? children : <h3>Loading</h3>;
 }
