@@ -29,8 +29,9 @@ export const OptionsMenu = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleLogout = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleLogout = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
         e.preventDefault();
+        handleClose();
         logout(() => navigate("/"));
     }
 
@@ -68,7 +69,7 @@ export const OptionsMenu = () => {
                 }}
             >
                 <MenuItem
-                    onClick={handleClose}
+                    onClick={handleLogout}
                     sx={{
                         [`& .${listItemIconClasses.root}`]: {
                             ml: 'auto',
@@ -76,8 +77,8 @@ export const OptionsMenu = () => {
                         },
                     }}
                 >
-                    <ListItemText primaryTypographyProps={{style: text}} onClick={handleLogout}>Logout</ListItemText>
-                    <ListItemIcon onClick={handleLogout}>
+                    <ListItemText primaryTypographyProps={{style: text}}>Logout</ListItemText>
+                    <ListItemIcon>
                         <LogoutRoundedIcon fontSize="small"/>
                     </ListItemIcon>
                 </MenuItem>

@@ -44,7 +44,7 @@ export const NavBar = () => {
                     <Stack direction="row" spacing={1} sx={{justifyContent: 'center'}}>
                         <SportsBaseball/>
                         <Typography variant="h4" component="h1" sx={{color: 'text.primary'}}>
-                            Title
+                            MLB The Show Forecaster
                         </Typography>
                     </Stack>
                     <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>

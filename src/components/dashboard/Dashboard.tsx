@@ -42,8 +42,6 @@ export const Dashboard = () => {
                 <SideMenu mode={mode} toggleColorMode={toggleColorMode}/>
                 <NavBar/>
 
-
-                {/* Main content */}
                 <Box
                     component="main"
                     sx={(theme) => ({
@@ -61,7 +59,6 @@ export const Dashboard = () => {
                             mt: {xs: 8, md: 0},
                         }}
                     >
-                        {<h1>Main content</h1>}
                         <div>
                             <Routes>
                                 <Route path="/" element={<RequireAuth><Jobs/></RequireAuth>}/>

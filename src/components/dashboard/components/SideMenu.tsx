@@ -9,6 +9,7 @@ import {MenuContent} from './MenuContent';
 import {OptionsMenu} from './OptionsMenu';
 import {ToggleColorMode} from "./ToggleColorMode.tsx";
 import {SportsBaseball} from "@mui/icons-material";
+import {useAuth} from "../../../contexts/AuthContext.ts";
 
 const drawerWidth = 240;
 
@@ -29,6 +30,8 @@ interface SideMenuProps {
 }
 
 export const SideMenu = ({mode, toggleColorMode}: SideMenuProps) => {
+    const auth = useAuth();
+
     return (
         <Drawer
             variant="permanent"
@@ -56,7 +59,7 @@ export const SideMenu = ({mode, toggleColorMode}: SideMenuProps) => {
                 >
                     <SportsBaseball sx={{fontSize: 50}}/>
                     <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
-                        Title
+                        MLB The Show Forecaster
                     </Typography>
                 </Stack>
 
@@ -76,32 +79,40 @@ export const SideMenu = ({mode, toggleColorMode}: SideMenuProps) => {
                 <ToggleColorMode data-screenshot="toggle-mode" mode={mode} toggleColorMode={toggleColorMode}/>
             </Box>
 
-            <Stack
-                direction="row"
-                sx={{
-                    p: 2,
-                    gap: 1,
-                    alignItems: 'center',
-                    borderTop: '1px solid',
-                    borderColor: 'divider',
-                }}
-            >
-                <Avatar
-                    sizes="small"
-                    alt="Username"
-                    src="vite.svg"
-                    sx={{width: 36, height: 36}}
-                />
-                <Box sx={{mr: 'auto'}}>
-                    <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
-                        Username
-                    </Typography>
-                    <Typography variant="caption" sx={{color: 'text.secondary'}}>
-                        user@example.com
-                    </Typography>
-                </Box>
-                <OptionsMenu/>
-            </Stack>
+            {auth.isAuthenticated ? (
+                <>
+                    <Stack
+                        direction="row"
+                        sx={{
+                            p: 2,
+                            gap: 1,
+                            alignItems: 'center',
+                            borderTop: '1px solid',
+                            borderColor: 'divider',
+                        }}
+                    >
+                        <Avatar
+                            sizes="small"
+                            alt={auth.username}
+                            sx={{width: 36, height: 36}}
+                        >
+                            {auth.username.substring(0, 1)}
+                        </Avatar>
+                        <Box sx={{mr: 'auto'}}>
+                            <Typography variant="body2" sx={{fontWeight: 500, lineHeight: '16px'}}>
+                                {auth.username}
+                            </Typography>
+                            <Typography variant="caption" sx={{color: 'text.secondary'}}>
+                                {auth.role}
+                            </Typography>
+                        </Box>
+                        <OptionsMenu/>
+                    </Stack>
+                </>
+            ) : (
+                <></>
+            )}
+
         </Drawer>
     );
 }
