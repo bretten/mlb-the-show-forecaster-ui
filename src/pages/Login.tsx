@@ -1,6 +1,10 @@
 import React, {useContext, useState} from "react";
 import {AuthContext} from "../contexts/AuthContext.ts";
 import {useLocation, useNavigate} from "react-router-dom";
+import {Alert, Box, FormControl, Input, InputLabel} from "@mui/material";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
 
 /**
  * Defines a Login UI component
@@ -20,6 +24,7 @@ export const Login = () => {
     const [error, setError] = useState('');
 
     const handleLogin = async (event: React.FormEvent) => {
+        setError("");
         event.preventDefault();
 
         login(username, password, () => {
@@ -30,35 +35,47 @@ export const Login = () => {
     }
 
     return (
-        <>
-            <h2>Login</h2>
+        <Box
+            component="form"
+            onSubmit={handleLogin}
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+                display: 'flex',
+                mt: '10px',
+                p: 1.5,
+            }}>
 
-            <div>
-                {error && <p style={{color: 'red'}}>{error}</p>}
-            </div>
+            <Stack spacing={1} direction="column" sx={{mb: 2}}>
+                <h2>Login</h2>
+                <div>
+                    {error && <Alert severity="error">{error}</Alert>}
+                </div>
 
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label htmlFor="username">Username:</label>
-                    <input
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        </>
+                <Divider/>
+                <FormControl variant="standard">
+                    <InputLabel htmlFor="username">Username</InputLabel>
+                    <Input id="username"
+                           value={username}
+                           onChange={(e) => setUsername(e.target.value)}
+                           aria-label="username"
+                           required/>
+                </FormControl>
+
+                <FormControl variant="standard">
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <Input id="password"
+                           type="password"
+                           value={password}
+                           onChange={(e) => setPassword(e.target.value)}
+                           aria-label="password"
+                           required/>
+                </FormControl>
+
+                <FormControl variant="standard">
+                    <Button color="primary" type="submit">Login</Button>
+                </FormControl>
+            </Stack>
+        </Box>
     )
 }
