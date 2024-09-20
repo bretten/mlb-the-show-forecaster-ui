@@ -9,7 +9,6 @@ import {
 import React, {useEffect} from "react";
 import Stack from "@mui/material/Stack";
 import {Alert, Divider, Pagination} from "@mui/material";
-import {IconButtonProps} from "@mui/material/IconButton";
 import {URLBuilder} from "../../../utils/URLBuilder.ts";
 
 const pageQueryParam = import.meta.env.VITE_DATA_URI_PAGE_QUERY_PARAM;
@@ -18,7 +17,7 @@ const sortFieldQueryParam = import.meta.env.VITE_DATA_URI_SORT_FIELD_QUERY_PARAM
 const sortOrderQueryParam = import.meta.env.VITE_DATA_URI_SORT_ORDER_QUERY_PARAM;
 const filterQueryParam = import.meta.env.VITE_DATA_URI_FILTER_QUERY_PARAM;
 
-export interface DataTableProps extends IconButtonProps {
+export interface DataTableProps {
     title: string;
     dataUrl: string;
     columns: GridColDef[];
