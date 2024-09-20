@@ -8,6 +8,8 @@ import {
     GridSortModel
 } from "@mui/x-data-grid";
 import React, {useEffect} from "react";
+import Stack from "@mui/material/Stack";
+import {Alert, Divider, Pagination} from "@mui/material";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const dataUrl = import.meta.env.VITE_DATA_URI;
@@ -57,6 +59,8 @@ export const DataTable = () => {
         quickFilterLogicOperator: GridLogicOperator.And,
         quickFilterValues: []
     });
+    const [totalPages, setTotalPages] = React.useState(0);
+    const [error, setError] = React.useState('');
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
         let url = baseUrl + dataUrl + "?page=" + (paginationModel.page + 1)
@@ -72,15 +76,19 @@ export const DataTable = () => {
         }
 
         fetch(url, {
-            method: "GET"
+            method: "GET",
+            credentials: "include"
         })
             .then((response) => response.json())
             .then((json) => {
+                setError('');
                 setRowData(json.items);
                 setRowCount(json.totalItems);
+                setTotalPages(json.totalPages);
             })
             .catch(function (error) {
                 console.log(error);
+                setError(error.message);
             });
     }
 
@@ -89,62 +97,84 @@ export const DataTable = () => {
     }, [paginationModel, sortModel, filterModel]);
 
     return (
-        <DataGrid
-            autoHeight
-            rows={rowData}
-            rowCount={rowCount}
-            columns={columns}
-            getRowClassName={(params) =>
-                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-            }
-            initialState={{
-                pagination: {paginationModel: paginationModel},
-                sorting: {sortModel: sortModel},
-            }}
-            paginationMode="server"
-            pageSizeOptions={[20, 50]}
-            onPaginationModelChange={(model) => {
-                fetchData(model, sortModel, filterModel);
-                setPaginationModel(model);
-            }}
-            sortingMode="server"
-            onSortModelChange={(model) => {
-                fetchData(paginationModel, model, filterModel);
-                setSortModel(model);
-            }}
-            sortModel={sortModel}
-            filterMode="server"
-            onFilterModelChange={(model) => {
-                setFilterModel(model);
-            }}
-            disableColumnResize
-            density="compact"
-            slotProps={{
-                filterPanel: {
-                    filterFormProps: {
-                        logicOperatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                        },
-                        columnInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: {mt: 'auto'},
-                        },
-                        operatorInputProps: {
-                            variant: 'outlined',
-                            size: 'small',
-                            sx: {mt: 'auto'},
-                        },
-                        valueInputProps: {
-                            InputComponentProps: {
+        <Stack
+            direction="column"
+            sx={{gap: 1, alignItems: 'center', flexGrow: 1, p: 1}}
+        >
+            <DataGrid
+                autoHeight
+                rows={rowData}
+                rowCount={rowCount}
+                columns={columns}
+                getRowClassName={(params) =>
+                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                }
+                initialState={{
+                    pagination: {paginationModel: paginationModel},
+                    sorting: {sortModel: sortModel},
+                }}
+                paginationMode="server"
+                pageSizeOptions={[5, 10, 20, 50]}
+                onPaginationModelChange={(model) => {
+                    fetchData(model, sortModel, filterModel);
+                    setPaginationModel(model);
+                }}
+                sortingMode="server"
+                onSortModelChange={(model) => {
+                    fetchData(paginationModel, model, filterModel);
+                    setSortModel(model);
+                }}
+                sortModel={sortModel}
+                filterMode="server"
+                onFilterModelChange={(model) => {
+                    setFilterModel(model);
+                }}
+                disableColumnResize
+                density="compact"
+                slotProps={{
+                    filterPanel: {
+                        filterFormProps: {
+                            logicOperatorInputProps: {
                                 variant: 'outlined',
                                 size: 'small',
                             },
+                            columnInputProps: {
+                                variant: 'outlined',
+                                size: 'small',
+                                sx: {mt: 'auto'},
+                            },
+                            operatorInputProps: {
+                                variant: 'outlined',
+                                size: 'small',
+                                sx: {mt: 'auto'},
+                            },
+                            valueInputProps: {
+                                InputComponentProps: {
+                                    variant: 'outlined',
+                                    size: 'small',
+                                },
+                            },
                         },
                     },
-                },
-            }}
-        />
+                }}
+            />
+            <Divider/>
+            <Pagination count={totalPages} variant="outlined" shape="rounded" showFirstButton showLastButton
+                        onChange={(_event, page) => {
+                            const updatedPaginationModel = {
+                                page: page - 1,
+                                pageSize: paginationModel.pageSize,
+                            }
+                            setPaginationModel(updatedPaginationModel);
+                        }}/>
+            {error && (
+                <div>
+                    <Divider/>
+                    <Alert severity="error">{error}</Alert>
+                    <Divider/>
+                </div>
+            )}
+
+        </Stack>
     );
 }
