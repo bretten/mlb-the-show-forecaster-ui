@@ -1,6 +1,5 @@
 import {
     DataGrid,
-    getGridStringOperators,
     GridColDef,
     GridFilterModel,
     GridLogicOperator,
@@ -10,40 +9,26 @@ import {
 import React, {useEffect} from "react";
 import Stack from "@mui/material/Stack";
 import {Alert, Divider, Pagination} from "@mui/material";
+import {IconButtonProps} from "@mui/material/IconButton";
+import {URLBuilder} from "../../../utils/URLBuilder.ts";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const dataUrl = import.meta.env.VITE_DATA_URI;
+const dataUri = import.meta.env.VITE_DATA_URI;
+const pageQueryParam = import.meta.env.VITE_DATA_URI_PAGE_QUERY_PARAM;
+const pageSizeQueryParam = import.meta.env.VITE_DATA_URI_PAGE_SIZE_QUERY_PARAM;
+const sortFieldQueryParam = import.meta.env.VITE_DATA_URI_SORT_FIELD_QUERY_PARAM;
+const sortOrderQueryParam = import.meta.env.VITE_DATA_URI_SORT_ORDER_QUERY_PARAM;
+const filterQueryParam = import.meta.env.VITE_DATA_URI_FILTER_QUERY_PARAM;
 
-// Remove any filter operators that won't be used
-const filterOperators = getGridStringOperators().filter(({value}) =>
-    ['contains'].includes(value),
-);
-const columns: GridColDef[] = [
-    {
-        field: 'id',
-        headerName: 'ID',
-        headerAlign: 'left',
-        align: 'left',
-        flex: 1,
-        minWidth: 100,
-        filterable: false
-    },
-    {
-        field: 'name',
-        headerName: 'Name',
-        headerAlign: 'left',
-        align: 'left',
-        flex: 1,
-        minWidth: 100,
-        filterOperators: filterOperators
-    }
-];
+export interface DataTableProps extends IconButtonProps {
+    columns: GridColDef[];
+}
 
 /**
  * Defines a table of data that is sortable and filterable
  * @constructor
  */
-export const DataTable = () => {
+export const DataTable = ({columns}: DataTableProps) => {
     const [paginationModel, setPaginationModel] = React.useState({
         page: 0,
         pageSize: 20,
@@ -51,7 +36,7 @@ export const DataTable = () => {
     const [rowData, setRowData] = React.useState([]);
     const [rowCount, setRowCount] = React.useState(0);
     const [sortModel, setSortModel] = React.useState<GridSortModel>([
-        {field: 'id', sort: 'asc'},
+        {field: columns[0].field, sort: 'asc'},
     ]);
     const [filterModel, setFilterModel] = React.useState<GridFilterModel>({
         items: [],
@@ -63,21 +48,21 @@ export const DataTable = () => {
     const [error, setError] = React.useState('');
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
-        let url = baseUrl + dataUrl + "?page=" + (paginationModel.page + 1)
-            + "&pageSize=" + paginationModel.pageSize;
+        const urlBuilder = new URLBuilder(baseUrl + dataUri);
+        urlBuilder.addQueryParam(pageQueryParam, (paginationModel.page + 1).toString());
+        urlBuilder.addQueryParam(pageSizeQueryParam, paginationModel.pageSize.toString());
         if (sortModel.length > 0) {
             const firstSort = sortModel[0]; // Allow only the first sort
-            url = url + "&sortField=" + firstSort.field
-                + "&sortOrder=" + firstSort.sort;
+            urlBuilder.addQueryParam(sortFieldQueryParam, firstSort.field);
+            urlBuilder.addQueryParam(sortOrderQueryParam, firstSort.sort ?? "asc");
         }
         if (filterModel.items.length > 0) {
             const firstFilter = filterModel.items[0];
-            url = url + "&filter=" + firstFilter.value;
+            urlBuilder.addQueryParam(filterQueryParam, firstFilter.value);
         }
 
-        fetch(url, {
-            method: "GET",
-            credentials: "include"
+        fetch(urlBuilder.build(), {
+            method: "GET"
         })
             .then((response) => response.json())
             .then((json) => {
@@ -87,7 +72,6 @@ export const DataTable = () => {
                 setTotalPages(json.totalPages);
             })
             .catch(function (error) {
-                console.log(error);
                 setError(error.message);
             });
     }
@@ -113,19 +97,22 @@ export const DataTable = () => {
                     pagination: {paginationModel: paginationModel},
                     sorting: {sortModel: sortModel},
                 }}
-                paginationMode="server"
                 pageSizeOptions={[5, 10, 20, 50]}
+                paginationMode="server"
+                paginationModel={paginationModel}
                 onPaginationModelChange={(model) => {
                     fetchData(model, sortModel, filterModel);
                     setPaginationModel(model);
+
                 }}
                 sortingMode="server"
+                sortModel={sortModel}
                 onSortModelChange={(model) => {
                     fetchData(paginationModel, model, filterModel);
                     setSortModel(model);
                 }}
-                sortModel={sortModel}
                 filterMode="server"
+                filterModel={filterModel}
                 onFilterModelChange={(model) => {
                     setFilterModel(model);
                 }}
@@ -159,13 +146,13 @@ export const DataTable = () => {
                 }}
             />
             <Divider/>
-            <Pagination count={totalPages} variant="outlined" shape="rounded" showFirstButton showLastButton
+            <Pagination page={paginationModel.page + 1} count={totalPages} variant="outlined" shape="rounded"
+                        showFirstButton showLastButton
                         onChange={(_event, page) => {
-                            const updatedPaginationModel = {
+                            setPaginationModel((prevState) => ({
+                                ...prevState,
                                 page: page - 1,
-                                pageSize: paginationModel.pageSize,
-                            }
-                            setPaginationModel(updatedPaginationModel);
+                            }));
                         }}/>
             {error && (
                 <div>
