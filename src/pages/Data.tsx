@@ -1,6 +1,9 @@
 import {DataTable} from "../components/dashboard/components/DataTable.tsx";
 import {getGridStringOperators, GridColDef} from "@mui/x-data-grid";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const playerCardsDataUri = import.meta.env.VITE_DATA_URI_PLAYER_CARDS;
+
 /**
  * Defines a Data UI component
  * - Displays all data in the MLB The Show Forecaster
@@ -35,7 +38,7 @@ export const Data = () => {
 
     return (
         <>
-            <DataTable columns={columns}/>
+            <DataTable title="Player Cards" dataUrl={baseUrl + playerCardsDataUri} columns={columns}/>
         </>
     );
 }

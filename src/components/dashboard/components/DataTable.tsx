@@ -12,8 +12,6 @@ import {Alert, Divider, Pagination} from "@mui/material";
 import {IconButtonProps} from "@mui/material/IconButton";
 import {URLBuilder} from "../../../utils/URLBuilder.ts";
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
-const dataUri = import.meta.env.VITE_DATA_URI;
 const pageQueryParam = import.meta.env.VITE_DATA_URI_PAGE_QUERY_PARAM;
 const pageSizeQueryParam = import.meta.env.VITE_DATA_URI_PAGE_SIZE_QUERY_PARAM;
 const sortFieldQueryParam = import.meta.env.VITE_DATA_URI_SORT_FIELD_QUERY_PARAM;
@@ -21,6 +19,8 @@ const sortOrderQueryParam = import.meta.env.VITE_DATA_URI_SORT_ORDER_QUERY_PARAM
 const filterQueryParam = import.meta.env.VITE_DATA_URI_FILTER_QUERY_PARAM;
 
 export interface DataTableProps extends IconButtonProps {
+    title: string;
+    dataUrl: string;
     columns: GridColDef[];
 }
 
@@ -28,7 +28,7 @@ export interface DataTableProps extends IconButtonProps {
  * Defines a table of data that is sortable and filterable
  * @constructor
  */
-export const DataTable = ({columns}: DataTableProps) => {
+export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
     const [paginationModel, setPaginationModel] = React.useState({
         page: 0,
         pageSize: 20,
@@ -48,7 +48,7 @@ export const DataTable = ({columns}: DataTableProps) => {
     const [error, setError] = React.useState('');
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
-        const urlBuilder = new URLBuilder(baseUrl + dataUri);
+        const urlBuilder = new URLBuilder(dataUrl);
         urlBuilder.addQueryParam(pageQueryParam, (paginationModel.page + 1).toString());
         urlBuilder.addQueryParam(pageSizeQueryParam, paginationModel.pageSize.toString());
         if (sortModel.length > 0) {
@@ -85,6 +85,7 @@ export const DataTable = ({columns}: DataTableProps) => {
             direction="column"
             sx={{gap: 1, alignItems: 'center', flexGrow: 1, p: 1}}
         >
+            <h1>{title}</h1>
             <DataGrid
                 autoHeight
                 rows={rowData}
