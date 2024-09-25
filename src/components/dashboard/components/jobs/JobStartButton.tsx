@@ -1,6 +1,6 @@
 import {JobType} from "../../internals/jobDefinitions.ts";
 import IconButton from "@mui/material/IconButton";
-import {PlayCircleFilled} from "@mui/icons-material";
+import PlayCircleFilled from "@mui/icons-material/PlayCircleFilled";
 import {useAuth} from "../../../../contexts/AuthContext.ts";
 import {useSignalR} from "../../../../contexts/SignalRContext.ts";
 import {enqueueSnackbar} from "notistack";
@@ -46,7 +46,7 @@ export const JobStartButton = ({job}: JobStartButtonProps) => {
         const currentState = methodsToStates[job.methodName];
         const isEnabled = currentState.isReady || currentState.isDone || currentState.isError;
         return (
-            <IconButton aria-label="delete" onClick={() => {
+            <IconButton aria-label="Start" onClick={() => {
                 invokeJob(job.methodName)
             }} disabled={!isEnabled}>
                 <PlayCircleFilled/>
