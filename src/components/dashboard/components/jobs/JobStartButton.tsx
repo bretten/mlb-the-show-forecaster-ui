@@ -11,6 +11,7 @@ export interface JobStartButtonProps {
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const jobsUri = import.meta.env.VITE_JOBS_URI_INVOKE;
+const credentials = import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS;
 
 /**
  * Represents a button that starts a job
@@ -25,7 +26,8 @@ export const JobStartButton = ({job}: JobStartButtonProps) => {
         if (!isAdmin) return;
 
         fetch(`${baseUrl}${jobsUri}?jobId=${jobId}`, {
-            method: "POST"
+            method: 'POST',
+            credentials: credentials
         })
             .then(res => {
                 if (res.status === 401) {

@@ -16,6 +16,7 @@ const pageSizeQueryParam = import.meta.env.VITE_DATA_URI_PAGE_SIZE_QUERY_PARAM;
 const sortFieldQueryParam = import.meta.env.VITE_DATA_URI_SORT_FIELD_QUERY_PARAM;
 const sortOrderQueryParam = import.meta.env.VITE_DATA_URI_SORT_ORDER_QUERY_PARAM;
 const filterQueryParam = import.meta.env.VITE_DATA_URI_FILTER_QUERY_PARAM;
+const credentials = import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS;
 
 export interface DataTableProps {
     title: string;
@@ -61,7 +62,8 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
         }
 
         fetch(urlBuilder.build(), {
-            method: "GET"
+            method: 'GET',
+            credentials
         })
             .then((response) => response.json())
             .then((json) => {

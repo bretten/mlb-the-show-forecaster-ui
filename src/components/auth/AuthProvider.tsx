@@ -5,6 +5,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const loginUri = import.meta.env.VITE_LOGIN_URI;
 const logoutUri = import.meta.env.VITE_LOGOUT_URI;
 const verifyUri = import.meta.env.VITE_VERIFY_URI;
+const credentials = import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS;
 
 /**
  * Auth provider for the whole application
@@ -24,6 +25,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({username, password}),
+            credentials: credentials
         });
 
         if (!response.ok) {
@@ -40,7 +42,8 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
     const logout = async (logoutSuccessCallback: VoidFunction) => {
         const response = await fetch(baseUrl + logoutUri, {
-            method: 'POST'
+            method: 'POST',
+            credentials: credentials
         });
         if (response.ok) {
             setUsername('');
@@ -52,7 +55,8 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
     const verify = async (verifySuccessCallback: VoidFunction, verifyFailedCallback: VoidFunction) => {
         const response = await fetch(baseUrl + verifyUri, {
-            method: 'POST'
+            method: 'POST',
+            credentials: credentials
         });
         if (!response.ok) {
             setUsername('');
