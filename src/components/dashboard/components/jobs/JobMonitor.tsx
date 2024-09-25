@@ -1,8 +1,10 @@
-import {Card, CardContent, Chip, Paper} from "@mui/material";
+import {Card, CardContent, Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import {useSignalR} from "../../../contexts/SignalRContext.ts";
-import {JobType} from "../internals/jobDefinitions.ts";
+import {useSignalR} from "../../../../contexts/SignalRContext.ts";
+import {JobType} from "../../internals/jobDefinitions.ts";
+import {JobStatus} from "./JobStatus.tsx";
+import {JobStartButton} from "./JobStartButton.tsx";
 
 export interface JobMonitorProps {
     job: JobType;
@@ -32,27 +34,16 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                             <Typography variant="h4" component="p">
                                 {job.title}
                             </Typography>
+                            <JobStartButton job={job}/>
                         </Stack>
                         <Typography variant="caption" sx={{color: 'text.secondary'}}>
                             {job.desc}
                         </Typography>
                     </Stack>
                     <Stack spacing={2} sx={{width: '100%'}}>
-                        <Typography component="h2" variant="subtitle2" gutterBottom>
-                            {(methodsToStates[job.methodName] == "" || methodsToStates[job.methodName] == undefined) && (
-                                <Chip size="small" color="info" label="Ready"/>)}
-                            {methodsToStates[job.methodName] != ""
-                                && methodsToStates[job.methodName] != "Done"
-                                && methodsToStates[job.methodName] != undefined
-                                && methodsToStates[job.methodName] != "Error"
-                                && (<Chip size="small" color="default" label="In Progress..."/>)}
-                            {methodsToStates[job.methodName] == "Error" && (
-                                <Chip size="small" color="error" label="Error"/>)}
-                            {methodsToStates[job.methodName] == "Done" && (
-                                <Chip size="small" color="success" label="Done"/>)}
-                        </Typography>
+                        <JobStatus state={methodsToStates[job.methodName]}/>
                         <Paper variant="outlined" square={true} sx={{textAlign: 'left', padding: 1}}>
-                            <Typography component="code">{methodsToStates[job.methodName] ?? "..."}</Typography>
+                            <Typography component="code">{methodsToStates[job.methodName].message}</Typography>
                         </Paper>
                     </Stack>
                 </Stack>

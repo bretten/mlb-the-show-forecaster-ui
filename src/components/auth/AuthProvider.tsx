@@ -15,6 +15,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState('');
     const [role, setRole] = useState('');
+    const isAdmin = role == "Admins";
 
     const login = async (username: string, password: string, loginSuccessCallback: VoidFunction, loginFailedCallback: VoidFunction) => {
         const response = await fetch(baseUrl + loginUri, {
@@ -67,6 +68,6 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
         }
     };
 
-    const value = {isAuthenticated, username, role, login, logout, verify};
+    const value = {isAuthenticated, username, role, isAdmin, login, logout, verify};
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -4,7 +4,7 @@ import {SignalRClient} from "../../services/SignalRClient.ts";
 import {enqueueSnackbar, SnackbarProvider} from "notistack";
 import {useAuth} from "../../contexts/AuthContext.ts";
 import {JobDefinitions} from "../dashboard/internals/jobDefinitions.ts";
-import {JobStates} from "../dashboard/internals/jobStates.ts";
+import {JobState} from "../dashboard/internals/jobStates.ts";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const jobsUri = import.meta.env.VITE_JOBS_URI_SIGNALR;
@@ -26,7 +26,10 @@ const enqueueSnack = (message: string, variant: "default" | "error" | "success" 
  */
 export const SignalRProvider = ({children}: { children: React.ReactNode }) => {
     // A mapping of SignalR methods to their corresponding messages
-    const [methodsToStates, setMethodsToStates] = useState<Record<string, string>>({});
+    const [methodsToStates, setMethodsToStates] = useState<Record<string, JobState>>(jobsToMonitor.reduce((previousValue, job) => {
+        previousValue[job.methodName] = JobState.createReadyState();
+        return previousValue;
+    }, {} as Record<string, JobState>));
     const {isAuthenticated} = useAuth();
 
     // When authenticated, connect to SignalR. Otherwise, disconnect
@@ -35,13 +38,16 @@ export const SignalRProvider = ({children}: { children: React.ReactNode }) => {
             signalRClient.start().then(() => {
                 // Register all job listeners after connecting
                 jobsToMonitor.forEach(async (job) => {
-                    signalRClient.registerHandler(job.methodName, (value: string) => {
-                        if (value == JobStates.Start) {
+                    signalRClient.registerHandler(job.methodName, (value: JobState) => {
+                        const jobState = new JobState(value.state, value.message);
+                        if (jobState.isStarted) {
                             enqueueSnack(`Job "${job.title}" started.`, "info");
-                        } else if (value == JobStates.Done) {
+                        } else if (jobState.isDone) {
                             enqueueSnack(`Job "${job.title}" finished.`, "success");
+                        } else if (jobState.isError) {
+                            enqueueSnack(`Job "${job.title}" encountered an error: ${jobState.message}`, "error");
                         }
-                        setMethodsToStates(prev => ({...prev, [job.methodName]: value}));
+                        setMethodsToStates(prev => ({...prev, [job.methodName]: jobState}));
                     });
                 });
             }).catch((error) => {

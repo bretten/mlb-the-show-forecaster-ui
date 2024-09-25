@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid2";
-import {JobMonitor} from "../components/dashboard/components/JobMonitor.tsx";
+import {JobMonitor} from "../components/dashboard/components/jobs/JobMonitor.tsx";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {JobDefinitions} from "../components/dashboard/internals/jobDefinitions.ts";
