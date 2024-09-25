@@ -36,6 +36,7 @@ describe('RequireAuth', () => {
             isAuthenticated: true,
             username: 'user1',
             role: 'Admins',
+            isAdmin: true,
             login: vi.fn(),
             logout: vi.fn(),
             verify: (verifySuccessCallback: VoidFunction) => {
@@ -64,6 +65,7 @@ describe('RequireAuth', () => {
             isAuthenticated: false,
             username: 'user1',
             role: 'Admins',
+            isAdmin: true,
             login: vi.fn(),
             logout: vi.fn(),
             verify: (_verifySuccessCallback: VoidFunction, verifyFailedCallback: VoidFunction) => {
