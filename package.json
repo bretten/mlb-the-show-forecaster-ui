@@ -16,6 +16,7 @@
     "@microsoft/signalr": "^8.0.7",
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
+    "@mui/x-charts": "^7.19.0",
     "@mui/x-data-grid": "^7.17.0",
     "notistack": "^3.0.1",
     "react": "^18.3.1",
