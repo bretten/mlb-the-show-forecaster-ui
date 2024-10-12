@@ -1,18 +1,5 @@
 import Stack from "@mui/material/Stack";
-import {
-    Box,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    Paper,
-    Radio,
-    RadioGroup,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableRow
-} from "@mui/material";
+import {Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup} from "@mui/material";
 import {
     BarPlot,
     BarSeriesType,
@@ -30,6 +17,7 @@ import {
 import {DatasetElementType} from "@mui/x-charts/internals";
 import {TrendReport} from "../../types/TrendReport.interface.ts";
 import {ChangeEvent, useState} from "react";
+import {TrendChartTooltip} from "./TrendChartTooltip.tsx";
 
 export interface TrendChartProps {
     trendReport: TrendReport;
@@ -38,59 +26,6 @@ export interface TrendChartProps {
 // Converts the x-axis index value to the corresponding date
 const dateFormatter = (xAxisDates: string[], index: number) => {
     return xAxisDates[index];
-};
-
-// Custom tooltip content
-const toolTipContent = props => {
-    const {itemData, series} = props;
-    const graphType = itemData.type;
-    const index = itemData.dataIndex;
-    const dataValue = series.data[index];
-    const label = series.label;
-    const color = series.color;
-
-    return (
-        <TableContainer component={Paper} sx={{
-            backgroundColor: color,
-            boxShadow: 'hsla(220, 30%, 5%, 0.7) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.8) 0px 8px 16px -5px'
-        }}>
-            <Table aria-label="Trend Chart">
-                <TableBody>
-                    <TableRow
-                        key={index}
-                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                    >
-                        <TableCell component="td" scope="row">
-                            <Box
-                                sx={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    boxShadow: 'hsla(220, 30%, 5%, 0.7) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.8) 0px 8px 16px -5px',
-                                    backgroundColor: color,
-                                    borderColor: 'hsl(220, 30%, 7%)',
-                                    border: 'solid hsl(220, 30%, 7%) 2px',
-                                    boxSizing: 'content-box',
-                                }}
-                            />
-                        </TableCell>
-                        {graphType != 'scatter' ? (
-                            <>
-                                <TableCell component="td" scope="row">
-                                    {label}
-                                </TableCell>
-                                <TableCell align="right">{dataValue}</TableCell>
-                            </>
-                        ) : (
-                            <>
-                                <TableCell align="right">{dataValue.desc}</TableCell>
-                            </>
-                        )}
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </TableContainer>
-    );
 };
 
 // The buy and sell price series
@@ -137,11 +72,15 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
      * @param trendReport
      */
     const getSeries = (key: string, trendReport: TrendReport) => {
+        const allPrices = trendReport.MetricsByDate.map((m) => m.SellPrice).concat(trendReport.MetricsByDate.map((m) => m.BuyPrice));
+        const maxPrice = Math.max(...allPrices);
+        const maxPriceLabel = Math.ceil(maxPrice * 1.10);
+
         const scatterSeries = impactSeries;
         scatterSeries.data = trendReport.Impacts.map((impact, index) => {
             return {
                 x: xAxisDates.indexOf(impact.Start),
-                y: 0,
+                y: maxPriceLabel,
                 id: index,
                 desc: `${impact.Start}: ${impact.Description}`,
             } as never;
@@ -205,7 +144,7 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                         <ChartsTooltip
                             trigger="item"
                             slots={{
-                                itemContent: toolTipContent
+                                itemContent: TrendChartTooltip
                             }}
                         />
                     </ResponsiveChartContainer>
