@@ -5,7 +5,7 @@ import {useEffect} from "react";
 const verifyIntervalMs = import.meta.env.VITE_VERIFY_INTERVAL_MS as number;
 
 /**
- * Verifies that the user is authenticated by polling the verification endpoint
+ * Checks that the user is authenticated by polling the auth context verification
  * @constructor
  */
 export const AuthenticationVerification = () => {
@@ -15,12 +15,14 @@ export const AuthenticationVerification = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             authContext.verify(() => {
+                // No action
             }, () => {
+                // Navigate to the login page
                 navigate("/login", {replace: true, state: {from: location}});
             });
         }, verifyIntervalMs);
 
-        return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+        return () => clearInterval(interval);
     }, [authContext, authContext.isAuthenticated, navigate]);
 
     return null;
