@@ -1,4 +1,7 @@
-import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
+import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
+
+const withCredentials = (import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS as string) == "include"
+    || (import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS as string) == "same-origin";
 
 /**
  * SignalR client
@@ -8,7 +11,10 @@ export class SignalRClient {
 
     constructor(hubUrl: string) {
         this.connection = new HubConnectionBuilder()
-            .withUrl(hubUrl)
+            .withUrl(hubUrl, {
+                withCredentials: withCredentials,
+                transport: HttpTransportType.WebSockets,
+            })
             .withAutomaticReconnect()
             .build();
 
