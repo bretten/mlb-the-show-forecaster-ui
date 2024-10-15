@@ -92,6 +92,9 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
                 rows={rowData}
                 rowCount={rowCount}
                 columns={columns}
+                getRowId={(row) => {
+                    return row.CardExternalId;
+                }}
                 getRowClassName={(params) =>
                     params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                 }
@@ -119,6 +122,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
                     setFilterModel(model);
                 }}
                 disableColumnResize
+                disableColumnMenu
                 density="compact"
                 slotProps={{
                     filterPanel: {
