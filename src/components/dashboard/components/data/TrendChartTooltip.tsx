@@ -4,7 +4,7 @@ import React from "react";
 
 /**
  * Custom tooltip for TrendChart
- * @param itemData Data for the point on the chard
+ * @param itemData Data for the point on the chart
  * @param series Data for the series containing the data point
  * @constructor
  */
