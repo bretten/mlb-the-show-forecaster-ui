@@ -10,7 +10,9 @@ const signalRClient = new SignalRClient(import.meta.env.VITE_BASE_URL + import.m
 function App() {
     return (
         <AuthProvider>
-            <AuthenticationVerification />
+            <AuthenticationVerification callback={async () => {
+                await signalRClient.reconnect()
+            }}/>
             <SignalRProvider client={signalRClient}>
                 <Layout/>
             </SignalRProvider>

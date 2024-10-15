@@ -7,9 +7,14 @@ const withCredentials = (import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS as
  * SignalR client
  */
 export class SignalRClient {
-    private readonly connection: HubConnection;
+    private connection: HubConnection;
+    private readonly hubUrl: string;
+    private readonly methods: { [name: string]: (((...args: any[]) => void) | ((...args: any[]) => any))[] };
 
     constructor(hubUrl: string) {
+        this.hubUrl = hubUrl;
+        this.methods = {};
+
         this.connection = new HubConnectionBuilder()
             .withUrl(hubUrl, {
                 withCredentials: withCredentials,
@@ -28,12 +33,31 @@ export class SignalRClient {
         });
     }
 
-    start(): Promise<void> {
+    public start(): Promise<void> {
         return this.connection.start();
     }
 
-    stop(): Promise<void> {
+    public stop(): Promise<void> {
         return this.connection.stop();
+    }
+
+    /**
+     * Disconnects from the current connection, creates a new connection, and then re-registers the handlers
+     * that were registered on the previous connection
+     */
+    public async reconnect(): Promise<void> {
+        await this.stop();
+        this.connection = new HubConnectionBuilder()
+            .withUrl(this.hubUrl)
+            .withAutomaticReconnect()
+            .build();
+        await this.connection.start();
+        for (const method in this.methods) {
+            const handlers = this.methods[method];
+            for (const handler of handlers) {
+                this.connection.on(method, handler);
+            }
+        }
     }
 
     /**
@@ -41,7 +65,22 @@ export class SignalRClient {
      * @param method The SignalR method
      * @param callback The callback to invoke when receiving a message from the SignalR method
      */
-    registerHandler(method: string, callback: (...args: any[]) => void) {
+    public registerHandler(method: string, callback: (...args: any[]) => any): void
+    public registerHandler(method: string, callback: (...args: any[]) => void): void {
+        if (!method || !callback) {
+            return;
+        }
+
+        method = method.toLowerCase();
+        if (!this.methods[method]) {
+            this.methods[method] = [];
+        }
+
+        if (this.methods[method].indexOf(callback) !== -1) { // No need if it already exists
+            return;
+        }
+
+        this.methods[method].push(callback);
         this.connection.on(method, callback);
     }
 
@@ -49,7 +88,17 @@ export class SignalRClient {
      * Unregisters a handler for the specified method
      * @param method The SignalR method
      */
-    unregisterHandler(method: string) {
+    public unregisterHandler(method: string) {
+        if (!method) {
+            return;
+        }
+
+        method = method.toLowerCase();
+        const handlers = this.methods[method];
+        if (!handlers) {
+            return;
+        }
+        delete this.methods[method];
         this.connection.off(method);
     }
 }
