@@ -40,7 +40,6 @@ describe('AuthenticationVerification', () => {
             logout: vi.fn(),
             verify: (verifySuccessCallback: VoidFunction) => {
                 verifySuccessCallback();
-                assertWasCalled = true;
             }
         };
 
@@ -48,7 +47,9 @@ describe('AuthenticationVerification', () => {
             createRoot(container!).render(
                 <MemoryRouter>
                     <AuthContext.Provider value={mockAuthContext}>
-                        <AuthenticationVerification/>
+                        <AuthenticationVerification callback={() => {
+                            assertWasCalled = true;
+                        }}/>
                     </AuthContext.Provider>
                 </MemoryRouter>
             )
@@ -79,7 +80,7 @@ describe('AuthenticationVerification', () => {
             createRoot(container!).render(
                 <MemoryRouter>
                     <AuthContext.Provider value={mockAuthContext}>
-                        <AuthenticationVerification/>
+                        <AuthenticationVerification callback={() => {}}/>
                     </AuthContext.Provider>
                 </MemoryRouter>
             )
