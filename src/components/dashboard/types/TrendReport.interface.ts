@@ -2,92 +2,94 @@
  * Defines a Trend Report
  */
 export interface TrendReportInterface {
-    Year: number;
-    CardExternalId: string;
-    MlbId: number;
-    CardName: string;
-    PrimaryPosition: string;
-    OverallRating: number;
-    MetricsByDate: TrendReportMetricsByDate[];
-    Impacts: TrendReportImpact[];
+    year: number;
+    cardExternalId: string;
+    mlbId: number;
+    cardName: string;
+    primaryPosition: string;
+    overallRating: number;
+    metricsByDate: TrendReportMetricsByDate[];
+    impacts: TrendReportImpact[];
 }
 
 /**
  * Implementation of TrendReportInterface
  */
 export class TrendReport implements TrendReportInterface {
-    private readonly _Year: number;
-    private readonly _CardExternalId: string;
-    private readonly _MlbId: number;
-    private readonly _CardName: string;
-    private readonly _PrimaryPosition: string;
-    private readonly _OverallRating: number;
-    private readonly _MetricsByDate: TrendReportMetricsByDate[];
-    private readonly _Impacts: TrendReportImpact[];
+    private readonly _year: number;
+    private readonly _cardExternalId: string;
+    private readonly _mlbId: number;
+    private readonly _cardName: string;
+    private readonly _primaryPosition: string;
+    private readonly _overallRating: number;
+    private readonly _metricsByDate: TrendReportMetricsByDate[];
+    private readonly _impacts: TrendReportImpact[];
 
     constructor(Year: number, CardExternalId: string, MlbId: number, CardName: string, PrimaryPosition: string, OverallRating: number, MetricsByDate: TrendReportMetricsByDate[], Impacts: TrendReportImpact[]) {
-        this._Year = Year;
-        this._CardExternalId = CardExternalId;
-        this._MlbId = MlbId;
-        this._CardName = CardName;
-        this._PrimaryPosition = PrimaryPosition;
-        this._OverallRating = OverallRating;
-        this._MetricsByDate = MetricsByDate;
-        this._Impacts = Impacts;
+        this._year = Year;
+        this._cardExternalId = CardExternalId;
+        this._mlbId = MlbId;
+        this._cardName = CardName;
+        this._primaryPosition = PrimaryPosition;
+        this._overallRating = OverallRating;
+        this._metricsByDate = MetricsByDate;
+        this._impacts = Impacts;
     }
 
-    get Impacts(): TrendReportImpact[] {
-        return this._Impacts;
+    get impacts(): TrendReportImpact[] {
+        return this._impacts;
     }
 
-    get MetricsByDate(): TrendReportMetricsByDate[] {
-        return this._MetricsByDate;
+    get metricsByDate(): TrendReportMetricsByDate[] {
+        return this._metricsByDate;
     }
 
-    get OverallRating(): number {
-        return this._OverallRating;
+    get overallRating(): number {
+        return this._overallRating;
     }
 
-    get PrimaryPosition(): string {
-        return this._PrimaryPosition;
+    get primaryPosition(): string {
+        return this._primaryPosition;
     }
 
-    get CardName(): string {
-        return this._CardName;
+    get cardName(): string {
+        return this._cardName;
     }
 
-    get MlbId(): number {
-        return this._MlbId;
+    get mlbId(): number {
+        return this._mlbId;
     }
 
-    get CardExternalId(): string {
-        return this._CardExternalId;
+    get cardExternalId(): string {
+        return this._cardExternalId;
     }
 
-    get Year(): number {
-        return this._Year;
+    get year(): number {
+        return this._year;
     }
 
-    public IsPitcher(): boolean {
-        return this._PrimaryPosition === "SP"
-            || this._PrimaryPosition === "RP"
-            || this._PrimaryPosition === "CP"
-            || this._PrimaryPosition === "P";
+    public isPitcher(): boolean {
+        return this._primaryPosition === "SP"
+            || this._primaryPosition === "RP"
+            || this._primaryPosition === "CP"
+            || this._primaryPosition === "P";
     }
 
-    public IsPositionPlayer(): boolean {
-        return this._PrimaryPosition === "C"
-            || this._PrimaryPosition === "1B"
-            || this._PrimaryPosition === "2B"
-            || this._PrimaryPosition === "3B"
-            || this._PrimaryPosition === "SS"
-            || this._PrimaryPosition === "RF"
-            || this._PrimaryPosition === "CF"
-            || this._PrimaryPosition === "LF";
+    public isPositionPlayer(): boolean {
+        return this._primaryPosition === "C"
+            || this._primaryPosition === "1B"
+            || this._primaryPosition === "2B"
+            || this._primaryPosition === "3B"
+            || this._primaryPosition === "SS"
+            || this._primaryPosition === "RF"
+            || this._primaryPosition === "CF"
+            || this._primaryPosition === "LF"
+            || this._primaryPosition === "OF"
+            || this._primaryPosition === "DH";
     }
 
-    public IsTwoWayPlayer(): boolean {
-        return this._PrimaryPosition === "TWP";
+    public isTwoWayPlayer(): boolean {
+        return this._primaryPosition === "TWP";
     }
 }
 
@@ -95,31 +97,31 @@ export class TrendReport implements TrendReportInterface {
  * Defines daily metrics for a trend report
  */
 export interface TrendReportMetricsByDate {
-    Date: string;
-    BuyPrice: number;
-    SellPrice: number;
-    BattingScore: number;
-    SignificantBattingParticipation: boolean;
-    PitchingScore: number;
-    SignificantPitchingParticipation: boolean;
-    FieldingScore: number;
-    SignificantFieldingParticipation: boolean;
-    BattingAverage: number;
-    OnBasePercentage: number;
-    Slugging: number;
-    EarnedRunAverage: number;
-    OpponentsBattingAverage: number;
-    StrikeoutsPer9: number;
-    BaseOnBallsPer9: number;
-    HomeRunsPer9: number;
-    FieldingPercentage: number;
+    date: string;
+    buyPrice: number;
+    sellPrice: number;
+    battingScore: number;
+    significantBattingParticipation: boolean;
+    pitchingScore: number;
+    significantPitchingParticipation: boolean;
+    fieldingScore: number;
+    significantFieldingParticipation: boolean;
+    battingAverage: number;
+    onBasePercentage: number;
+    slugging: number;
+    earnedRunAverage: number;
+    opponentsBattingAverage: number;
+    strikeoutsPer9: number;
+    baseOnBallsPer9: number;
+    homeRunsPer9: number;
+    fieldingPercentage: number;
 }
 
 /**
  * Defines a trend report impact
  */
 export interface TrendReportImpact {
-    Start: string;
-    End: string;
-    Description: string;
+    start: string;
+    end: string;
+    description: string;
 }

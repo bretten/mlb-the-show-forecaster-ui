@@ -36,7 +36,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
     const [rowData, setRowData] = React.useState([]);
     const [rowCount, setRowCount] = React.useState(0);
     const [sortModel, setSortModel] = React.useState<GridSortModel>([
-        {field: columns[0].field, sort: 'asc'},
+        {field: "ovr", sort: 'desc'},
     ]);
     const [filterModel, setFilterModel] = React.useState<GridFilterModel>({
         items: [],
@@ -49,6 +49,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
         const urlBuilder = new URLBuilder(dataUrl);
+        urlBuilder.addQueryParam("season", "2024"); // TODO Replace with season context
         urlBuilder.addQueryParam(pageQueryParam, (paginationModel.page + 1).toString());
         urlBuilder.addQueryParam(pageSizeQueryParam, paginationModel.pageSize.toString());
         if (sortModel.length > 0) {
@@ -93,7 +94,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
                 rowCount={rowCount}
                 columns={columns}
                 getRowId={(row) => {
-                    return row.CardExternalId;
+                    return row.cardExternalId;
                 }}
                 getRowClassName={(params) =>
                     params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'

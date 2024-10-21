@@ -43,14 +43,14 @@ export const Data = () => {
                     <IconButton
                         aria-label={"Chart"}
                         onClick={() => {
-                            setTrendReport(new TrendReport(params.row.Year,
-                                params.row.CardExternalId,
-                                params.row.MlbId,
-                                params.row.CardName,
-                                params.row.PrimaryPosition,
-                                params.row.OverallRating,
-                                params.row.MetricsByDate,
-                                params.row.Impacts
+                            setTrendReport(new TrendReport(params.row.year,
+                                params.row.cardExternalId,
+                                params.row.mlbId,
+                                params.row.cardName,
+                                params.row.primaryPosition,
+                                params.row.overallRating,
+                                params.row.metricsByDate,
+                                params.row.impacts
                             ));
                             handleOpen();
                         }}
@@ -66,29 +66,44 @@ export const Data = () => {
             }
         },
         {
-            field: 'CardName',
+            field: 'name',
+            valueGetter: (_value, row) => {
+                return row.cardName;
+            },
             headerName: 'Name',
             headerAlign: 'left',
             align: 'left',
             flex: 1,
-            minWidth: 100,
+            sortable: true,
+            filterable: false,
+            minWidth: 300,
             filterOperators: filterOperators
         },
         {
-            field: 'OverallRating',
+            field: 'ovr',
+            valueGetter: (_value, row) => {
+                return row.overallRating;
+            },
             headerName: 'OVR',
             headerAlign: 'left',
             align: 'left',
             flex: 1,
+            sortable: true,
+            filterable: false,
             minWidth: 100,
             filterOperators: filterOperators
         },
         {
             field: 'PrimaryPosition',
+            valueGetter: (_value, row) => {
+                return row.primaryPosition;
+            },
             headerName: 'Pos',
             headerAlign: 'left',
             align: 'left',
             flex: 1,
+            sortable: false,
+            filterable: false,
             minWidth: 100,
             filterOperators: filterOperators
         }

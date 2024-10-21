@@ -30,8 +30,8 @@ const dateFormatter = (xAxisDates: string[], index: number) => {
 
 // The buy and sell price series
 const baseSeries: (LineSeriesType | BarSeriesType | ScatterSeriesType)[] = [
-    {type: 'bar', dataKey: "BuyPrice", label: "Buy Price", yAxisId: 'rightAxis'},
-    {type: 'bar', dataKey: "SellPrice", label: "Sell Price", yAxisId: 'rightAxis'}
+    {type: 'bar', dataKey: "buyPrice", label: "Buy Price", yAxisId: 'rightAxis'},
+    {type: 'bar', dataKey: "sellPrice", label: "Sell Price", yAxisId: 'rightAxis'}
 ];
 // The forecast impact series
 const impactSeries: ScatterSeriesType = {
@@ -43,27 +43,27 @@ const impactSeries: ScatterSeriesType = {
 };
 // All available and selectable series to view along with the buy, sell, and impact series
 const allSeries: Readonly<Record<string, (LineSeriesType | BarSeriesType | ScatterSeriesType)>> = {
-    "BattingAverage": {type: 'line', dataKey: "BattingAverage", label: "AVG", yAxisId: 'leftAxis'},
-    "OnBasePercentage": {type: 'line', dataKey: "OnBasePercentage", label: "OBP", yAxisId: 'leftAxis'},
-    "Slugging": {type: 'line', dataKey: "Slugging", label: "SLG", yAxisId: 'leftAxis'},
-    "BattingScore": {type: 'line', dataKey: "BattingScore", label: "Score", yAxisId: 'leftAxis'},
-    "EarnedRunAverage": {type: 'line', dataKey: "EarnedRunAverage", label: "ERA", yAxisId: 'leftAxis'},
+    "BattingAverage": {type: 'line', dataKey: "battingAverage", label: "AVG", yAxisId: 'leftAxis'},
+    "OnBasePercentage": {type: 'line', dataKey: "onBasePercentage", label: "OBP", yAxisId: 'leftAxis'},
+    "Slugging": {type: 'line', dataKey: "slugging", label: "SLG", yAxisId: 'leftAxis'},
+    "BattingScore": {type: 'line', dataKey: "battingScore", label: "Score", yAxisId: 'leftAxis'},
+    "EarnedRunAverage": {type: 'line', dataKey: "earnedRunAverage", label: "ERA", yAxisId: 'leftAxis'},
     "OpponentsBattingAverage": {
         type: 'line',
-        dataKey: "OpponentsBattingAverage",
+        dataKey: "opponentsBattingAverage",
         label: "OBA",
         yAxisId: 'leftAxis'
     },
-    "StrikeoutsPer9": {type: 'line', dataKey: "StrikeoutsPer9", label: "K/9", yAxisId: 'leftAxis'},
-    "BaseOnBallsPer9": {type: 'line', dataKey: "BaseOnBallsPer9", label: "BB/9", yAxisId: 'leftAxis'},
-    "HomeRunsPer9": {type: 'line', dataKey: "HomeRunsPer9", label: "HR/9", yAxisId: 'leftAxis'},
-    "PitchingScore": {type: 'line', dataKey: "PitchingScore", label: "Score", yAxisId: 'leftAxis'},
+    "StrikeoutsPer9": {type: 'line', dataKey: "strikeoutsPer9", label: "K/9", yAxisId: 'leftAxis'},
+    "BaseOnBallsPer9": {type: 'line', dataKey: "baseOnBallsPer9", label: "BB/9", yAxisId: 'leftAxis'},
+    "HomeRunsPer9": {type: 'line', dataKey: "homeRunsPer9", label: "HR/9", yAxisId: 'leftAxis'},
+    "PitchingScore": {type: 'line', dataKey: "pitchingScore", label: "Score", yAxisId: 'leftAxis'},
 };
 
 
 export const TrendChart = ({trendReport}: TrendChartProps) => {
     // x-axis values will be the indexes of the dates array and will pull the corresponding date when labeling
-    const xAxisDates: string[] = trendReport.MetricsByDate.map((_) => _.Date);
+    const xAxisDates: string[] = trendReport.metricsByDate.map((_) => _.date);
     const xAxisIndexes = xAxisDates.map((_, index) => index);
 
     /**
@@ -72,24 +72,24 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
      * @param trendReport
      */
     const getSeries = (key: string, trendReport: TrendReport) => {
-        const allPrices = trendReport.MetricsByDate.map((m) => m.SellPrice).concat(trendReport.MetricsByDate.map((m) => m.BuyPrice));
+        const allPrices = trendReport.metricsByDate.map((m) => m.sellPrice).concat(trendReport.metricsByDate.map((m) => m.buyPrice));
         const maxPrice = Math.max(...allPrices);
         const maxPriceLabel = Math.ceil(maxPrice * 1.10);
 
         const scatterSeries = impactSeries;
-        scatterSeries.data = trendReport.Impacts.map((impact, index) => {
+        scatterSeries.data = trendReport.impacts.map((impact, index) => {
             return {
-                x: xAxisDates.indexOf(impact.Start),
+                x: xAxisDates.indexOf(impact.start),
                 y: maxPriceLabel,
                 id: index,
-                desc: `${impact.Start}: ${impact.Description}`,
+                desc: `${impact.start}: ${impact.description}`,
             } as never;
         });
 
         return [...baseSeries, allSeries[key], scatterSeries];
     }
 
-    const initialSeries = trendReport.IsPitcher() ? "EarnedRunAverage" : "BattingAverage";
+    const initialSeries = trendReport.isPitcher() ? "EarnedRunAverage" : "BattingAverage";
     const [visibleSeries, setVisibleSeries] = useState<(LineSeriesType | BarSeriesType | ScatterSeriesType)[]>(getSeries(initialSeries, trendReport));
     const [focusedSeries, setFocusedSeries] = useState<(LineSeriesType | BarSeriesType | ScatterSeriesType)>(allSeries[initialSeries]);
 
@@ -104,7 +104,7 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                 <Box sx={{width: '100%'}}>
                     <ResponsiveChartContainer
                         series={visibleSeries}
-                        dataset={(trendReport.MetricsByDate as unknown as DatasetElementType<never>[])}
+                        dataset={(trendReport.metricsByDate as unknown as DatasetElementType<never>[])}
                         xAxis={[
                             {
                                 scaleType: 'band',
@@ -158,9 +158,9 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                         aria-labelledby="stat-toggle-label"
                         name="stat-radio-buttons-group"
                         onChange={handleStatChange}
-                        defaultValue={trendReport.IsPitcher() ? "EarnedRunAverage" : "BattingAverage"}
+                        defaultValue={trendReport.isPitcher() ? "EarnedRunAverage" : "BattingAverage"}
                     >
-                        {(trendReport.IsPositionPlayer() || trendReport.IsTwoWayPlayer()) &&
+                        {(trendReport.isPositionPlayer() || trendReport.isTwoWayPlayer()) &&
                             (
                                 <>
                                     <FormControlLabel value="BattingAverage" control={<Radio/>} label="AVG"/>
@@ -169,7 +169,7 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                                     <FormControlLabel value="BattingScore" control={<Radio/>} label="Batting Score"/>
                                 </>
                             )}
-                        {(trendReport.IsPitcher() || trendReport.IsTwoWayPlayer()) &&
+                        {(trendReport.isPitcher() || trendReport.isTwoWayPlayer()) &&
                             (
                                 <>
                                     <FormControlLabel value="EarnedRunAverage" control={<Radio/>} label="ERA"/>
