@@ -12,7 +12,7 @@ export enum JobStates {
     /**
      * The job is in progress
      */
-    InProgress = "In Progress",
+    InProgress = "InProgress",
 
     /**
      * The job has finished
@@ -41,9 +41,16 @@ export class JobState {
      */
     private readonly _message: string;
 
-    constructor(jobState: string, message: string) {
+    /**
+     * Data about the state
+     * @private
+     */
+    private readonly _data: never;
+
+    constructor(jobState: string, message: string, data: never) {
         this._state = jobState;
         this._message = message;
+        this._data = data;
     }
 
     get state(): string {
@@ -52,6 +59,10 @@ export class JobState {
 
     get message(): string {
         return this._message;
+    }
+
+    get data(): never {
+        return this._data;
     }
 
     get isReady(): boolean {
@@ -75,6 +86,6 @@ export class JobState {
     }
 
     static createReadyState(): JobState {
-        return new JobState(JobStates.Ready, "...");
+        return new JobState(JobStates.Ready, "...", {} as never);
     }
 }
