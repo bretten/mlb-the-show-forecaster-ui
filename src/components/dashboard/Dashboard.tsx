@@ -40,7 +40,7 @@ export const Dashboard = () => {
             <CssBaseline enableColorScheme/>
             <Box sx={{display: 'flex'}}>
                 <SideMenu mode={mode} toggleColorMode={toggleColorMode}/>
-                <NavBar/>
+                <NavBar mode={mode} toggleColorMode={toggleColorMode}/>
 
                 <Box
                     component="main"
