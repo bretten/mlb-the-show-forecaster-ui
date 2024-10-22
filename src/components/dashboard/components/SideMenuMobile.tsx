@@ -10,13 +10,18 @@ import {MenuContent} from './MenuContent';
 import {useAuth} from "../../../contexts/AuthContext.ts";
 import * as React from "react";
 import {useNavigate} from "react-router-dom";
+import {ToggleColorMode} from "./ToggleColorMode.tsx";
+import {SeasonSwitcher} from "../../season/SeasonSwitcher.tsx";
+import {PaletteMode} from "@mui/material/styles";
 
 interface SideMenuMobileProps {
     open: boolean | undefined;
     toggleDrawer: (newOpen: boolean) => () => void;
+    mode: PaletteMode;
+    toggleColorMode: () => void;
 }
 
-export default function SideMenuMobile({open, toggleDrawer}: SideMenuMobileProps) {
+export default function SideMenuMobile({open, toggleDrawer, mode, toggleColorMode}: SideMenuMobileProps) {
     const auth = useAuth();
     const navigate = useNavigate();
 
@@ -72,8 +77,19 @@ export default function SideMenuMobile({open, toggleDrawer}: SideMenuMobileProps
                 }
                 <Stack sx={{flexGrow: 1}}>
                     <MenuContent/>
-                    <Divider/>
+                    <Stack
+                        direction="row"
+                        sx={{
+                            p: 2,
+                            gap: 1,
+                            alignItems: 'center'
+                        }}
+                    >
+                        <ToggleColorMode data-screenshot="toggle-mode" mode={mode} toggleColorMode={toggleColorMode}/>
+                        <SeasonSwitcher/>
+                    </Stack>
                 </Stack>
+                <Divider/>
                 {
                     auth.isAuthenticated ? (
                             <>
