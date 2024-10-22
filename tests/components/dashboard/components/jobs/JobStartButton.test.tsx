@@ -8,11 +8,13 @@ import {JobStartButton} from "../../../../../src/components/dashboard/components
 
 class MockJob implements JobType {
     title: string;
+    jobUri: string;
     methodName: string;
     desc: string;
 
-    constructor(title: string, methodName: string, desc: string) {
+    constructor(title: string, jobUri: string, methodName: string, desc: string) {
         this.title = title;
+        this.jobUri = jobUri;
         this.methodName = methodName;
         this.desc = desc;
     }
@@ -47,11 +49,11 @@ describe('JobStartButton', () => {
         // Mock SignalR context
         const signalRContext = {
             methodsToStates: {
-                method1: new JobState("Done", "Job finished")
+                method1: new JobState("Done", "Job finished", null)
             }
         };
 
-        const mockJob = new MockJob("title1", "method1", "desc1");
+        const mockJob = new MockJob("title1", "uri", "method1", "desc1");
 
         render(
             <AuthContext.Provider value={mockAuthContext}>

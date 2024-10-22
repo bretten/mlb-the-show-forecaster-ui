@@ -36,13 +36,13 @@ export const SignalRProvider = ({children, client}: { children: React.ReactNode,
                 // Register all job listeners after connecting
                 jobsToMonitor.forEach(async (job) => {
                     client.registerHandler(job.methodName, (value: JobState) => {
-                        const jobState = new JobState(value.state, value.message);
+                        const jobState = new JobState(value.state, value.message, value.data); // Need to instantiate to access methods
                         if (jobState.isStarted) {
                             enqueueSnack(`Job "${job.title}" started.`, "info");
                         } else if (jobState.isDone) {
                             enqueueSnack(`Job "${job.title}" finished.`, "success");
                         } else if (jobState.isError) {
-                            enqueueSnack(`Job "${job.title}" encountered an error: ${jobState.message}`, "error");
+                            enqueueSnack(`Job "${job.title}": ${jobState.message}`, "error");
                         }
                         setMethodsToStates(prev => ({...prev, [job.methodName]: jobState}));
                     });
