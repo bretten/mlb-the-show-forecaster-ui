@@ -5,13 +5,19 @@ import {MenuRounded, SportsBaseball} from "@mui/icons-material";
 import Typography from "@mui/material/Typography";
 import {MenuButton} from "./dashboard/components/MenuButton.tsx";
 import SideMenuMobile from "./dashboard/components/SideMenuMobile.tsx";
+import {PaletteMode} from "@mui/material/styles";
+
+interface NavBarProps {
+    mode: PaletteMode;
+    toggleColorMode: () => void;
+}
 
 /**
  * Defines a navigation bar UI component
  *
  * @constructor
  */
-export const NavBar = () => {
+export const NavBar = ({mode, toggleColorMode}: NavBarProps) => {
     const [open, setOpen] = React.useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
@@ -50,7 +56,8 @@ export const NavBar = () => {
                     <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
                         <MenuRounded/>
                     </MenuButton>
-                    <SideMenuMobile open={open} toggleDrawer={toggleDrawer}/>
+                    <SideMenuMobile open={open} toggleDrawer={toggleDrawer} mode={mode}
+                                    toggleColorMode={toggleColorMode}/>
                 </Stack>
             </Toolbar>
         </AppBar>

@@ -4,13 +4,13 @@ import PlayCircleFilled from "@mui/icons-material/PlayCircleFilled";
 import {useAuth} from "../../../../contexts/AuthContext.ts";
 import {useSignalR} from "../../../../contexts/SignalRContext.ts";
 import {enqueueSnackbar} from "notistack";
+import {useSeason} from "../../../../contexts/SeasonContext.ts";
 
 export interface JobStartButtonProps {
     job: JobType;
 }
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const jobsUri = import.meta.env.VITE_JOBS_URI_INVOKE;
 const credentials = import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS;
 
 /**
@@ -21,11 +21,12 @@ const credentials = import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS;
 export const JobStartButton = ({job}: JobStartButtonProps) => {
     const {isAdmin} = useAuth();
     const {methodsToStates} = useSignalR();
+    const {season} = useSeason();
 
     const invokeJob = (jobId: string) => {
         if (!isAdmin) return;
 
-        fetch(`${baseUrl}${jobsUri}?jobId=${jobId}`, {
+        fetch(`${baseUrl}${job.jobUri}?season=${season}&jobId=${jobId}`, {
             method: 'POST',
             credentials: credentials
         })

@@ -10,6 +10,7 @@ import {OptionsMenu} from './OptionsMenu';
 import {ToggleColorMode} from "./ToggleColorMode.tsx";
 import {SportsBaseball} from "@mui/icons-material";
 import {useAuth} from "../../../contexts/AuthContext.ts";
+import {SeasonSwitcher} from "../../season/SeasonSwitcher.tsx";
 
 const drawerWidth = 240;
 
@@ -76,7 +77,17 @@ export const SideMenu = ({mode, toggleColorMode}: SideMenuProps) => {
                     p: 1.5,
                 }}
             >
-                <ToggleColorMode data-screenshot="toggle-mode" mode={mode} toggleColorMode={toggleColorMode}/>
+                <Stack
+                    direction="row"
+                    sx={{
+                        p: 2,
+                        gap: 1,
+                        alignItems: 'center'
+                    }}
+                >
+                    <ToggleColorMode data-screenshot="toggle-mode" mode={mode} toggleColorMode={toggleColorMode}/>
+                    <SeasonSwitcher/>
+                </Stack>
             </Box>
 
             {auth.isAuthenticated ? (

@@ -18,6 +18,11 @@ export interface JobMonitorProps {
 export const JobMonitor = ({job}: JobMonitorProps) => {
     const {methodsToStates} = useSignalR();
 
+    function camelCaseSplit(camelCase: string) {
+        const result = camelCase.replace(/([A-Z])/g, ' $1');
+        return result.charAt(0).toUpperCase() + result.slice(1);
+    }
+
     return (
         <Card variant="outlined" sx={{height: '100%', flexGrow: 1}}>
             <CardContent>
@@ -42,8 +47,25 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                     </Stack>
                     <Stack spacing={2} sx={{width: '100%'}}>
                         <JobStatus state={methodsToStates[job.methodName]}/>
-                        <Paper variant="outlined" square={true} sx={{textAlign: 'left', padding: 1}}>
-                            <Typography component="code">{methodsToStates[job.methodName].message}</Typography>
+                        <Paper variant="outlined" square={true}
+                               sx={{textAlign: 'left', padding: 1, height: 60, overflowY: 'auto'}}>
+                            <Typography component="pre" sx={{fontFamily: 'monospace'}}>
+                                {
+                                    (methodsToStates[job.methodName].data != null) ? (
+                                            Object.entries(methodsToStates[job.methodName].data).map(([key, value]) => (
+                                                    <>
+                                                        <span>{camelCaseSplit(key)}:</span><span>&nbsp;</span>
+                                                        <span>{value as string}</span>
+                                                        <br/>
+                                                    </>
+                                                )
+                                            )
+                                        )
+                                        : (
+                                            <span>{methodsToStates[job.methodName].message}</span>
+                                        )
+                                }
+                            </Typography>
                         </Paper>
                     </Stack>
                 </Stack>
