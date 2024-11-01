@@ -4,7 +4,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
-import {CasesRounded, LoginRounded, TableRowsRounded} from "@mui/icons-material";
+import {CasesRounded, LoginRounded, TrendingUpRounded} from "@mui/icons-material";
 import {Link, useLocation} from 'react-router-dom';
 import {useAuth} from "../../../contexts/AuthContext.ts";
 
@@ -13,8 +13,8 @@ const unauthenticatedItems = [
 ];
 
 const authenticatedItems = [
-    {text: 'Jobs', icon: <CasesRounded/>, path: "/"},
-    {text: 'Data', icon: <TableRowsRounded/>, path: "/data"}
+    {text: 'Trend Reports', icon: <TrendingUpRounded/>, path: "/"},
+    {text: 'Jobs', icon: <CasesRounded/>, path: "/jobs"}
 ];
 
 export const MenuContent = () => {

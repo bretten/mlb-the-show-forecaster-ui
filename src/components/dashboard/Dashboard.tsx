@@ -61,8 +61,8 @@ export const Dashboard = () => {
                     >
                         <div>
                             <Routes>
-                                <Route path="/" element={<RequireAuth><Jobs/></RequireAuth>}/>
-                                <Route path="/data" element={<RequireAuth><Data/></RequireAuth>}/>
+                                <Route path="/" element={<RequireAuth><Data/></RequireAuth>}/>
+                                <Route path="/jobs" element={<RequireAuth><Jobs/></RequireAuth>}/>
                                 <Route path="/login" element={<Login/>}/>
                                 <Route path="*" element={<Navigate to="/" replace/>}/>
                             </Routes>

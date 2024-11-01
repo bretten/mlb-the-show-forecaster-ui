@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import {BarChart} from "@mui/icons-material";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const playerCardsDataUri = import.meta.env.VITE_DATA_URI_PLAYER_CARDS;
+const trendReportsDataUri = import.meta.env.VITE_DATA_URI_TREND_REPORTS;
 
 /**
  * Defines a Data UI component
@@ -111,7 +111,7 @@ export const Data = () => {
 
     return (
         <>
-            <DataTable title="Player Cards" dataUrl={baseUrl + playerCardsDataUri} columns={columns}/>
+            <DataTable title="Trend Reports" dataUrl={baseUrl + trendReportsDataUri} columns={columns}/>
             <div>
                 <Modal
                     open={open}

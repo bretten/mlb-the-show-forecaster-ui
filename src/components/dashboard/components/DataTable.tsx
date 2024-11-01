@@ -10,6 +10,7 @@ import React, {useEffect} from "react";
 import Stack from "@mui/material/Stack";
 import {Alert, Divider, Pagination} from "@mui/material";
 import {URLBuilder} from "../../../utils/URLBuilder.ts";
+import {useSeason} from "../../../contexts/SeasonContext.ts";
 
 const pageQueryParam = import.meta.env.VITE_DATA_URI_PAGE_QUERY_PARAM;
 const pageSizeQueryParam = import.meta.env.VITE_DATA_URI_PAGE_SIZE_QUERY_PARAM;
@@ -29,6 +30,7 @@ export interface DataTableProps {
  * @constructor
  */
 export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
+    const {season} = useSeason();
     const [paginationModel, setPaginationModel] = React.useState({
         page: 0,
         pageSize: 20,
@@ -49,7 +51,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
         const urlBuilder = new URLBuilder(dataUrl);
-        urlBuilder.addQueryParam("season", "2024"); // TODO Replace with season context
+        urlBuilder.addQueryParam("season", season.toString());
         urlBuilder.addQueryParam(pageQueryParam, (paginationModel.page + 1).toString());
         urlBuilder.addQueryParam(pageSizeQueryParam, paginationModel.pageSize.toString());
         if (sortModel.length > 0) {
