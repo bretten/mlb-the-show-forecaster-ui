@@ -1,10 +1,9 @@
-import {Card, CardContent, Paper} from "@mui/material";
+import {Box, Card, CardContent, Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import {useSignalR} from "../../../../contexts/SignalRContext.ts";
 import {JobType} from "../../internals/jobDefinitions.ts";
 import {JobStatus} from "./JobStatus.tsx";
-import {JobStartButton} from "./JobStartButton.tsx";
 
 export interface JobMonitorProps {
     job: JobType;
@@ -39,7 +38,6 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                             <Typography variant="h4" component="p">
                                 {job.title}
                             </Typography>
-                            <JobStartButton job={job}/>
                         </Stack>
                         <Typography variant="caption" sx={{color: 'text.secondary'}}>
                             {job.desc}
@@ -53,11 +51,11 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                                 {
                                     (methodsToStates[job.methodName].data != null) ? (
                                             Object.entries(methodsToStates[job.methodName].data).map(([key, value]) => (
-                                                    <>
+                                                    <Box key={key}>
                                                         <span>{camelCaseSplit(key)}:</span><span>&nbsp;</span>
                                                         <span>{value as string}</span>
                                                         <br/>
-                                                    </>
+                                                    </Box>
                                                 )
                                             )
                                         )
