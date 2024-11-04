@@ -8,6 +8,7 @@ import {JobStartButton} from "../components/dashboard/components/jobs/JobStartBu
 import {Box} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import PlayCircleFilled from "@mui/icons-material/PlayCircleFilled";
+import {useAuth} from "../contexts/AuthContext.ts";
 
 const data = JobDefinitions;
 
@@ -20,6 +21,7 @@ const data = JobDefinitions;
  */
 export const Jobs = () => {
     const {methodsToStates} = useSignalR();
+    const {isAdmin} = useAuth();
 
     // True if the jobs can be started or false if they are already in progress
     const isReady = Object.values(methodsToStates).every(x => x.isReady || x.isDone || x.isError);
@@ -31,20 +33,27 @@ export const Jobs = () => {
             </Typography>
 
             {
-                isReady &&
-                <Box>
-                    <JobStartButton job={JobPlayerStatusTracker}/>
-                </Box>
+                isAdmin &&
+                (
+                    <>
+                        {isReady ?
+                            (
+                                <Box>
+                                    <JobStartButton job={JobPlayerStatusTracker}/>
+                                </Box>
+                            ) :
+                            (
+                                <Box>
+                                    <IconButton aria-label="Start" disabled={true}>
+                                        <PlayCircleFilled/>
+                                    </IconButton>
+                                </Box>
+                            )
+                        }
+                        <Typography>Run all jobs</Typography>
+                    </>
+                )
             }
-            {
-                !isReady &&
-                <Box>
-                    <IconButton aria-label="Start" disabled={true}>
-                        <PlayCircleFilled/>
-                    </IconButton>
-                </Box>
-            }
-            <Typography>Run all jobs</Typography>
 
             <Grid
                 container
