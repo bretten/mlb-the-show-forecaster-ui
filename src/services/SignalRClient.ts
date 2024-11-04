@@ -101,4 +101,12 @@ export class SignalRClient {
         delete this.methods[method];
         this.connection.off(method);
     }
+
+    /**
+     * Invokes a method on the SignalR connection
+     * @param method The SignalR method to invoke
+     */
+    public invoke(method: string): Promise<any> {
+        return this.connection.invoke(method);
+    }
 }
