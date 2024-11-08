@@ -71,7 +71,7 @@ export const SignalRProvider = ({children, client}: { children: React.ReactNode,
                 });
             });
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, season]);
 
     return <SignalRContext.Provider value={{
         methodsToStates
