@@ -1,4 +1,5 @@
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
+import {HubConnectionState} from "@microsoft/signalr/src/HubConnection.ts";
 
 const withCredentials = (import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS as string) == "include"
     || (import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS as string) == "same-origin";
@@ -58,6 +59,13 @@ export class SignalRClient {
                 this.connection.on(method, handler);
             }
         }
+    }
+
+    /**
+     * True if the client is connected or connecting, otherwise false
+     */
+    isConnected(): boolean {
+        return this.connection.state != HubConnectionState.Disconnected;
     }
 
     /**

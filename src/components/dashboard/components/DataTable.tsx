@@ -82,7 +82,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
 
     useEffect(() => {
         fetchData(paginationModel, sortModel, filterModel);
-    }, [paginationModel, sortModel, filterModel]);
+    }, [paginationModel, sortModel, filterModel, season]);
 
     return (
         <Stack
