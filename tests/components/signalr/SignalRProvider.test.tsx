@@ -8,17 +8,32 @@ import {SeasonContext} from "../../../src/contexts/SeasonContext";
 
 const jobsToMonitor = JobDefinitions;
 
-vi.mock("../../../src/services/SignalRClient", () => {
-    return {
-        SignalRClient: vi.fn().mockImplementation(() => {
-            return {
+const mocks = vi.hoisted(() => {
+        return {
+            SignalRClient: {
                 start: vi.fn(() => Promise.resolve()),
                 stop: vi.fn(() => Promise.resolve()),
+                isConnected: vi.fn().mockReturnValue(true),
                 registerHandler: vi.fn(() => {
                 }),
                 unregisterHandler: vi.fn(() => {
                 }),
                 invoke: vi.fn().mockResolvedValue({})
+            }
+        }
+    }
+);
+
+vi.mock("../../../src/services/SignalRClient", () => {
+    return {
+        SignalRClient: vi.fn().mockImplementation(() => {
+            return {
+                start: mocks.SignalRClient.start,
+                stop: mocks.SignalRClient.stop,
+                isConnected: mocks.SignalRClient.isConnected,
+                registerHandler: mocks.SignalRClient.registerHandler,
+                unregisterHandler: mocks.SignalRClient.unregisterHandler,
+                invoke: mocks.SignalRClient.invoke
             };
         })
     };
@@ -37,6 +52,7 @@ describe('SignalRProvider', () => {
     it('provides the signalr client when authenticated and registers the handlers', async () => {
         // Mock client
         const mockClient = new SignalRClient("url");
+        mocks.SignalRClient.isConnected.mockReturnValue(false);
         // Mock season
         const mockSeason = {
             season: 2024,
@@ -68,6 +84,7 @@ describe('SignalRProvider', () => {
     it('unregisters the handlers when not authenticated', async () => {
         // Mock client
         const mockClient = new SignalRClient("url");
+        mocks.SignalRClient.isConnected.mockReturnValue(true);
         // Mock season
         const mockSeason = {
             season: 2024,
