@@ -6,6 +6,7 @@ import {AuthContext} from "../../../../../src/contexts/AuthContext";
 import {SignalRContext} from "../../../../../src/contexts/SignalRContext";
 import {JobStartButton} from "../../../../../src/components/dashboard/components/jobs/JobStartButton";
 import {SeasonContext} from "../../../../../src/contexts/SeasonContext";
+import {LayoutContext} from "../../../../../src/contexts/LayoutContext";
 
 class MockJob implements JobType {
     title: string;
@@ -59,6 +60,11 @@ describe('JobStartButton', () => {
                 method1: new JobState("Done", "Job finished", null)
             }
         };
+        // Mock Layout context
+        const layoutContext = {
+            isLoading: false,
+            setIsLoading: vi.fn()
+        };
 
         const mockJob = new MockJob("title1", "uri", "method1", "desc1");
 
@@ -66,7 +72,9 @@ describe('JobStartButton', () => {
             <SeasonContext.Provider value={mockSeasonContext}>
                 <AuthContext.Provider value={mockAuthContext}>
                     <SignalRContext.Provider value={signalRContext}>
-                        <JobStartButton job={mockJob}/>
+                        <LayoutContext.Provider value={layoutContext}>
+                            <JobStartButton job={mockJob}/>
+                        </LayoutContext.Provider>
                     </SignalRContext.Provider>
                 </AuthContext.Provider>
             </SeasonContext.Provider>

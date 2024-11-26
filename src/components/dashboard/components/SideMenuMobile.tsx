@@ -13,6 +13,7 @@ import {useNavigate} from "react-router-dom";
 import {ToggleColorMode} from "./ToggleColorMode.tsx";
 import {SeasonSwitcher} from "../../season/SeasonSwitcher.tsx";
 import {PaletteMode} from "@mui/material/styles";
+import {useLayout} from "../../../contexts/LayoutContext.ts";
 
 interface SideMenuMobileProps {
     open: boolean | undefined;
@@ -24,10 +25,15 @@ interface SideMenuMobileProps {
 export default function SideMenuMobile({open, toggleDrawer, mode, toggleColorMode}: SideMenuMobileProps) {
     const auth = useAuth();
     const navigate = useNavigate();
+    const {setIsLoading} = useLayout();
 
     const handleLogout = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        setIsLoading(true);
         e.preventDefault();
-        auth.logout(() => navigate("/"));
+        auth.logout(() => {
+            setIsLoading(false);
+            navigate("/");
+        });
     }
 
     return (

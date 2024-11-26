@@ -13,6 +13,7 @@ import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import {MenuButton} from './MenuButton';
 import {AuthContext} from "../../../contexts/AuthContext.ts";
 import {useNavigate} from "react-router-dom";
+import {useLayout} from "../../../contexts/LayoutContext.ts";
 
 const MenuItem = styled(MuiMenuItem)({
     margin: '2px 0',
@@ -23,6 +24,8 @@ export const OptionsMenu = () => {
     const {logout} = useContext(AuthContext);
     const navigate = useNavigate();
     const open = Boolean(anchorEl);
+    const {setIsLoading} = useLayout();
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -30,9 +33,13 @@ export const OptionsMenu = () => {
         setAnchorEl(null);
     };
     const handleLogout = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+        setIsLoading(true);
         e.preventDefault();
         handleClose();
-        logout(() => navigate("/"));
+        logout(() => {
+            setIsLoading(false);
+            navigate("/");
+        });
     }
 
     const text = {

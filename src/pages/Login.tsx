@@ -5,6 +5,7 @@ import {Alert, Box, FormControl, Input, InputLabel} from "@mui/material";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
+import {useLayout} from "../contexts/LayoutContext.ts";
 
 /**
  * Defines a Login UI component
@@ -22,14 +23,18 @@ export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const {setIsLoading} = useLayout();
 
     const handleLogin = async (event: React.FormEvent) => {
+        setIsLoading(true);
         setError("");
         event.preventDefault();
 
         login(username, password, () => {
+            setIsLoading(false);
             navigate(from, {replace: true});
         }, () => {
+            setIsLoading(false);
             setError('Login failed. Please try again.');
         })
     }

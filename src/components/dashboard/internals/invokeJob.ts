@@ -8,8 +8,9 @@ const credentials = import.meta.env.VITE_HTTP_REQUEST_HEADER_CREDENTIALS;
  * Invokes a job
  * @param season The season to invoke the job for
  * @param job The job to invoke
+ * @param finallyCallback Called after the fetch finishes
  */
-export const invokeJob = (season: number, job: JobType) => {
+export const invokeJob = (season: number, job: JobType, finallyCallback: () => void) => {
     fetch(`${baseUrl}${job.jobUri}?season=${season}&jobId=${job.methodName}`, {
         method: 'POST',
         credentials: credentials
@@ -24,5 +25,8 @@ export const invokeJob = (season: number, job: JobType) => {
                 variant: "error",
                 anchorOrigin: {vertical: "bottom", horizontal: "center"}
             })
+        })
+        .finally(() => {
+            finallyCallback();
         });
 }

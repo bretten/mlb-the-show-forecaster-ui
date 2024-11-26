@@ -48,8 +48,10 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
     });
     const [totalPages, setTotalPages] = React.useState(0);
     const [error, setError] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
+        setIsLoading(true);
         const urlBuilder = new URLBuilder(dataUrl);
         urlBuilder.addQueryParam("season", season.toString());
         urlBuilder.addQueryParam(pageQueryParam, (paginationModel.page + 1).toString());
@@ -77,6 +79,9 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
             })
             .catch(function (error) {
                 setError(error.message);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     }
 
@@ -91,6 +96,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
         >
             <h1>{title}</h1>
             <DataGrid
+                loading={isLoading}
                 autoHeight
                 rows={rowData}
                 rowCount={rowCount}

@@ -28,7 +28,8 @@ const registerHandlers = (client: SignalRClient, jobsToMonitor: JobType[], seaso
                     enqueueSnack(`Job "${job.title}" started.`, "info");
                 } else if (jobState.isDone) {
                     enqueueSnack(`Job "${job.title}" finished.`, "success");
-                    if (job.nextJob != null) invokeJob(season, job.nextJob);
+                    if (job.nextJob != null) invokeJob(season, job.nextJob, () => {
+                    });
                 } else if (jobState.isError) {
                     enqueueSnack(`Job "${job.title}": ${jobState.message}`, "error");
                 }
