@@ -5,6 +5,7 @@ import {useAuth} from "../../../../contexts/AuthContext.ts";
 import {useSignalR} from "../../../../contexts/SignalRContext.ts";
 import {useSeason} from "../../../../contexts/SeasonContext.ts";
 import {invokeJob} from "../../internals/invokeJob.ts";
+import {useLayout} from "../../../../contexts/LayoutContext.ts";
 
 export interface JobStartButtonProps {
     job: JobType;
@@ -19,13 +20,17 @@ export const JobStartButton = ({job}: JobStartButtonProps) => {
     const {isAdmin} = useAuth();
     const {methodsToStates} = useSignalR();
     const {season} = useSeason();
+    const {setIsLoading} = useLayout();
 
     if (isAdmin) {
         const currentState = methodsToStates[job.methodName];
         const isEnabled = currentState.isReady || currentState.isDone || currentState.isError;
         return (
             <IconButton aria-label="Start" onClick={() => {
-                invokeJob(season, job);
+                setIsLoading(true);
+                invokeJob(season, job, () => {
+                    setIsLoading(false);
+                });
             }} disabled={!isEnabled}>
                 <PlayCircleFilled/>
             </IconButton>
