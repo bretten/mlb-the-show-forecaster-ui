@@ -11,6 +11,7 @@ import Stack from "@mui/material/Stack";
 import {Alert, Divider, Pagination} from "@mui/material";
 import {URLBuilder} from "../../../utils/URLBuilder.ts";
 import {useSeason} from "../../../contexts/SeasonContext.ts";
+import {TrendReport} from "../types/TrendReport.interface.ts";
 
 const pageQueryParam = import.meta.env.VITE_DATA_URI_PAGE_QUERY_PARAM;
 const pageSizeQueryParam = import.meta.env.VITE_DATA_URI_PAGE_SIZE_QUERY_PARAM;
@@ -73,7 +74,26 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
             .then((response) => response.json())
             .then((json) => {
                 setError('');
-                setRowData(json.items);
+                const reports = json.items.map((item: any) => {
+                    return new TrendReport(item.year,
+                        item.cardExternalId,
+                        item.mlbId,
+                        item.cardName,
+                        item.primaryPosition,
+                        item.overallRating,
+                        item.metricsByDate,
+                        item.impacts,
+                        item.orders1H,
+                        item.orders24H,
+                        item.buyPrice,
+                        item.buyPriceChange24H,
+                        item.sellPrice,
+                        item.sellPriceChange24H,
+                        item.score,
+                        item.scoreChange2W
+                    );
+                })
+                setRowData(reports);
                 setRowCount(json.totalItems);
                 setTotalPages(json.totalPages);
             })

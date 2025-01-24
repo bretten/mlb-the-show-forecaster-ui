@@ -24,8 +24,17 @@ export class TrendReport implements TrendReportInterface {
     private readonly _overallRating: number;
     private readonly _metricsByDate: TrendReportMetricsByDate[];
     private readonly _impacts: TrendReportImpact[];
+    private readonly _orders1H: number;
+    private readonly _orders24H: number;
+    private readonly _buyPrice: number;
+    private readonly _buyPriceChange24H: number;
+    private readonly _sellPrice: number;
+    private readonly _sellPriceChange24H: number;
+    private readonly _score: number;
+    private readonly _scoreChange2W: number;
 
-    constructor(Year: number, CardExternalId: string, MlbId: number, CardName: string, PrimaryPosition: string, OverallRating: number, MetricsByDate: TrendReportMetricsByDate[], Impacts: TrendReportImpact[]) {
+    constructor(Year: number, CardExternalId: string, MlbId: number, CardName: string, PrimaryPosition: string, OverallRating: number, MetricsByDate: TrendReportMetricsByDate[], Impacts: TrendReportImpact[],
+                orders1H: number, orders24H: number, buyPrice: number, buyPriceChange24H: number, sellPrice: number, sellPriceChange24H: number, score: number, scoreChange2W: number) {
         this._year = Year;
         this._cardExternalId = CardExternalId;
         this._mlbId = MlbId;
@@ -34,6 +43,14 @@ export class TrendReport implements TrendReportInterface {
         this._overallRating = OverallRating;
         this._metricsByDate = MetricsByDate;
         this._impacts = Impacts;
+        this._orders1H = orders1H;
+        this._orders24H = orders24H;
+        this._buyPrice = buyPrice;
+        this._buyPriceChange24H = buyPriceChange24H;
+        this._sellPrice = sellPrice;
+        this._sellPriceChange24H = sellPriceChange24H;
+        this._score = score;
+        this._scoreChange2W = scoreChange2W;
     }
 
     get impacts(): TrendReportImpact[] {
@@ -66,6 +83,38 @@ export class TrendReport implements TrendReportInterface {
 
     get year(): number {
         return this._year;
+    }
+
+    get orders1H(): number {
+        return this._orders1H;
+    }
+
+    get orders24H(): number {
+        return this._orders24H;
+    }
+
+    get buyPrice(): number {
+        return this._buyPrice;
+    }
+
+    get buyPriceChange24H(): number {
+        return this._buyPriceChange24H;
+    }
+
+    get sellPrice(): number {
+        return this._sellPrice;
+    }
+
+    get sellPriceChange24H(): number {
+        return this._sellPriceChange24H;
+    }
+
+    get score(): number {
+        return this._score;
+    }
+
+    get scoreChange2W(): number {
+        return this._scoreChange2W;
     }
 
     public isPitcher(): boolean {
@@ -115,6 +164,8 @@ export interface TrendReportMetricsByDate {
     baseOnBallsPer9: number;
     homeRunsPer9: number;
     fieldingPercentage: number;
+    demand: number;
+    orderCount: number;
 }
 
 /**

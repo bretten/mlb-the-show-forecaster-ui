@@ -4,6 +4,7 @@ import {
     BarPlot,
     BarSeriesType,
     ChartsGrid,
+    ChartsReferenceLine,
     ChartsTooltip,
     ChartsXAxis,
     ChartsYAxis,
@@ -30,8 +31,8 @@ const dateFormatter = (xAxisDates: string[], index: number) => {
 
 // The buy and sell price series
 const baseSeries: (LineSeriesType | BarSeriesType | ScatterSeriesType)[] = [
-    {type: 'bar', dataKey: "buyPrice", label: "Buy Price", yAxisId: 'rightAxis'},
-    {type: 'bar', dataKey: "sellPrice", label: "Sell Price", yAxisId: 'rightAxis'}
+    {type: 'bar', dataKey: "buyPrice", label: "Bid Price", yAxisId: 'rightAxis'},
+    {type: 'bar', dataKey: "sellPrice", label: "Ask Price", yAxisId: 'rightAxis'}
 ];
 // The forecast impact series
 const impactSeries: ScatterSeriesType = {
@@ -58,6 +59,8 @@ const allSeries: Readonly<Record<string, (LineSeriesType | BarSeriesType | Scatt
     "BaseOnBallsPer9": {type: 'line', dataKey: "baseOnBallsPer9", label: "BB/9", yAxisId: 'leftAxis'},
     "HomeRunsPer9": {type: 'line', dataKey: "homeRunsPer9", label: "HR/9", yAxisId: 'leftAxis'},
     "PitchingScore": {type: 'line', dataKey: "pitchingScore", label: "Score", yAxisId: 'leftAxis'},
+    "Demand": {type: 'line', dataKey: "demand", label: "Demand", yAxisId: 'leftAxis'},
+    "OrderCount": {type: 'line', dataKey: "orderCount", label: "Orders", yAxisId: 'leftAxis'},
 };
 
 
@@ -65,6 +68,7 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
     // x-axis values will be the indexes of the dates array and will pull the corresponding date when labeling
     const xAxisDates: string[] = trendReport.metricsByDate.map((_) => _.date);
     const xAxisIndexes = xAxisDates.map((_, index) => index);
+    const endOfSeasonIndex = xAxisDates.findIndex(date => date == `${trendReport.year}-10-01`);
 
     /**
      * Gets the concatenated series that will be viewable
@@ -147,6 +151,13 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                                 itemContent: TrendChartTooltip
                             }}
                         />
+                        <ChartsReferenceLine
+                            x={endOfSeasonIndex}
+                            lineStyle={{strokeDasharray: '10 5'}}
+                            labelStyle={{fontSize: '10'}}
+                            label={`End of\nregular season`}
+                            labelAlign="start"
+                        />
                     </ResponsiveChartContainer>
                 </Box>
             </Box>
@@ -180,7 +191,8 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                                     <FormControlLabel value="PitchingScore" control={<Radio/>} label="Pitching Score"/>
                                 </>
                             )}
-
+                        <FormControlLabel value="Demand" control={<Radio/>} label="Demand"/>
+                        <FormControlLabel value="OrderCount" control={<Radio/>} label="Orders"/>
                     </RadioGroup>
                 </FormControl>
             </Box>
