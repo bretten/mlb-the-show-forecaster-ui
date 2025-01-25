@@ -86,7 +86,7 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                 x: xAxisDates.indexOf(impact.start),
                 y: maxPriceLabel,
                 id: index,
-                desc: `${impact.start}: ${impact.description}`,
+                desc: `${impact.start}: ${impact.description} (${impact.demand})`,
             } as never;
         });
 

@@ -8,10 +8,17 @@ import {
 } from "@mui/x-data-grid";
 import React, {useEffect} from "react";
 import Stack from "@mui/material/Stack";
-import {Alert, Divider, Pagination} from "@mui/material";
+import {Alert, Box, Divider, Pagination, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {URLBuilder} from "../../../utils/URLBuilder.ts";
 import {useSeason} from "../../../contexts/SeasonContext.ts";
 import {TrendReport} from "../types/TrendReport.interface.ts";
+import {AddReaction} from "@mui/icons-material";
+import Diamond from '../../../assets/shield-diamond.webp';
+import Gold from '../../../assets/shield-gold.webp';
+import Silver from '../../../assets/shield-silver.webp';
+import Bronze from '../../../assets/shield-bronze.webp';
+import Common from '../../../assets/shield-common.webp';
+import Typography from "@mui/material/Typography";
 
 const pageQueryParam = import.meta.env.VITE_DATA_URI_PAGE_QUERY_PARAM;
 const pageSizeQueryParam = import.meta.env.VITE_DATA_URI_PAGE_SIZE_QUERY_PARAM;
@@ -50,6 +57,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
     const [totalPages, setTotalPages] = React.useState(0);
     const [error, setError] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
+    const [cardFilter, setCardFilter] = React.useState('');
 
     const fetchData = (paginationModel: GridPaginationModel, sortModel: GridSortModel, filterModel: GridFilterModel) => {
         setIsLoading(true);
@@ -57,6 +65,9 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
         urlBuilder.addQueryParam("season", season.toString());
         urlBuilder.addQueryParam(pageQueryParam, (paginationModel.page + 1).toString());
         urlBuilder.addQueryParam(pageSizeQueryParam, paginationModel.pageSize.toString());
+        if (cardFilter != null) {
+            urlBuilder.addQueryParam("cardFilter", cardFilter);
+        }
         if (sortModel.length > 0) {
             const firstSort = sortModel[0]; // Allow only the first sort
             urlBuilder.addQueryParam(sortFieldQueryParam, firstSort.field);
@@ -83,6 +94,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
                         item.overallRating,
                         item.metricsByDate,
                         item.impacts,
+                        item.isBoosted,
                         item.orders1H,
                         item.orders24H,
                         item.buyPrice,
@@ -90,7 +102,8 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
                         item.sellPrice,
                         item.sellPriceChange24H,
                         item.score,
-                        item.scoreChange2W
+                        item.scoreChange2W,
+                        item.demand
                     );
                 })
                 setRowData(reports);
@@ -107,7 +120,7 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
 
     useEffect(() => {
         fetchData(paginationModel, sortModel, filterModel);
-    }, [paginationModel, sortModel, filterModel, season]);
+    }, [paginationModel, sortModel, filterModel, season, cardFilter]);
 
     return (
         <Stack
@@ -115,6 +128,43 @@ export const DataTable = ({title, dataUrl, columns}: DataTableProps) => {
             sx={{gap: 1, alignItems: 'center', flexGrow: 1, p: 1}}
         >
             <h1>{title}</h1>
+
+            <Stack direction={"row"} display={"flex"} justifyContent={"center"} spacing={2} marginBottom={2}>
+                <Typography variant="h5" paddingTop={1}>Filter</Typography>
+                <ToggleButtonGroup
+                    value={cardFilter}
+                    exclusive
+                    onChange={(_, value) => setCardFilter(value)}
+                    aria-label="Card filter"
+                >
+                    <ToggleButton value="boosted" aria-label="boosted" style={{outline: "none"}}>
+                        <AddReaction/>&nbsp;Supercharged
+                    </ToggleButton>
+                    <ToggleButton value="diamond" aria-label="diamond" style={{outline: "none"}}>
+                        <Box component="img" src={Diamond} alt="Diamond" sx={{height: 25, width: 25}}/>
+                        <Box marginLeft={1}>99 - 85</Box>
+                    </ToggleButton>
+                    <ToggleButton value="gold" aria-label="gold" style={{outline: "none"}}>
+                        <Box component="img" src={Gold} alt="Gold" sx={{height: 25, width: 25}}/>
+                        <Box marginLeft={1}>84 - 80</Box>
+                    </ToggleButton>
+                    <ToggleButton value="silver" aria-label="silver" style={{outline: "none"}}>
+                        <Box component="img" src={Silver} alt="Silver" sx={{height: 25, width: 25}}/>
+                        <Box marginLeft={1}>79 - 75</Box>
+                    </ToggleButton>
+                    <ToggleButton value="bronze" aria-label="bronze" style={{outline: "none"}}>
+                        <Box component="img" src={Bronze} alt="Bronze" sx={{height: 25, width: 25}}/>
+                        <Box marginLeft={1}>74 - 65</Box>
+                    </ToggleButton>
+                    <ToggleButton value="common" aria-label="common" style={{outline: "none"}}>
+                        <Box component="img" src={Common} alt="Common" sx={{height: 25, width: 25}}/>
+                        <Box marginLeft={1}>64 - 1</Box>
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Stack>
+
+            <Divider/>
+
             <DataGrid
                 loading={isLoading}
                 autoHeight

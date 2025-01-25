@@ -9,9 +9,13 @@ import {
 import {Box, Modal, Tooltip} from "@mui/material";
 import {TrendChart} from "../components/dashboard/components/data/TrendChart.tsx";
 import {useState} from "react";
-import {TrendReport} from "../components/dashboard/types/TrendReport.interface.ts";
+import {TrendReport, TrendReportImpact} from "../components/dashboard/types/TrendReport.interface.ts";
 import IconButton from "@mui/material/IconButton";
-import {BarChart} from "@mui/icons-material";
+import {BarChart, Info} from "@mui/icons-material";
+import {OverallRating} from "../components/cards/overallRating.ts";
+import {RatingIcon} from "../components/cards/RatingIcon.tsx";
+import Stack from "@mui/material/Stack";
+import {WideTooltip} from "../components/dashboard/components/WideTooltip.tsx";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const trendReportsDataUri = import.meta.env.VITE_DATA_URI_TREND_REPORTS;
@@ -28,7 +32,7 @@ export const Data = () => {
         ['contains'].includes(value),
     );
     // State for the currently selected trend report
-    const [trendReport, setTrendReport] = useState<TrendReport>(new TrendReport(0, "", 0, "", "", 0, [], [], 0, 0, 0, 0, 0, 0, 0, 0));
+    const [trendReport, setTrendReport] = useState<TrendReport>(new TrendReport(0, "", 0, "", "", 0, [], [], false, 0, 0, 0, 0, 0, 0, 0, 0, 0));
     // State for the modal that displays the trend report
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -42,12 +46,58 @@ export const Data = () => {
         if (magnitude < negligibleChangeThreshold) {
             color = 'text.secondary';
         } else if (params.value > negligibleChangeThreshold) {
-            color = 'success.main';
+            color = 'success.light';
         } else if (params.value < -negligibleChangeThreshold) {
-            color = 'error.main';
+            color = 'error.light';
         }
         return (
             <Box sx={{color: color}}>{params.value}%</Box>
+        );
+    }
+
+    // Cell content for a rating
+    const getRatingCellContent = (params: GridRenderCellParams) => {
+        const overallRating = new OverallRating(params.value);
+        return (
+            <Stack direction="row" alignContent={"center"}>
+                {overallRating.rating}
+                <RatingIcon rating={overallRating} size={20}/>
+            </Stack>
+        );
+    }
+
+    // Cell content for demand
+    const getDemandCellContent = (params: GridRenderCellParams) => {
+        return (
+            <WideTooltip
+                title={<Box>{params.row.impacts
+                    .sort((x: TrendReportImpact, y: TrendReportImpact) => new Date(y.start).getTime() - new Date(x.start).getTime())
+                    .map((i: TrendReportImpact) => (<ImpactDisplay impact={i}/>))}</Box>}>
+                <Box>
+                    {params.value > 0 && (<Box>{params.value}&nbsp;<Info/></Box>)}
+                    {params.value <= 0 && (<Box>--</Box>)}
+                </Box>
+            </WideTooltip>
+        );
+    }
+
+    // Displays an impact
+    const ImpactDisplay = ({impact}: { impact: TrendReportImpact }) => {
+        let color;
+        let prefix = '';
+        if (impact.demand > 0) {
+            color = 'success.light';
+            prefix = "+";
+        } else if (impact.demand == 0) {
+            color = 'text.secondary';
+        } else {
+            color = 'error.light';
+        }
+        return (
+            <Stack direction={"row"} sx={{fontSize: "1.2em"}}>
+                <Box marginRight={1} sx={{color: color}}>({prefix}{impact.demand})</Box>
+                <strong>{impact.start}</strong>: {impact.description}
+            </Stack>
         );
     }
 
@@ -85,6 +135,7 @@ export const Data = () => {
                                 params.row.overallRating,
                                 params.row.metricsByDate,
                                 params.row.impacts,
+                                params.row.isBoosted,
                                 params.row.orders1H,
                                 params.row.orders24H,
                                 params.row.buyPrice,
@@ -92,7 +143,8 @@ export const Data = () => {
                                 params.row.sellPrice,
                                 params.row.sellPriceChange24H,
                                 params.row.score,
-                                params.row.scoreChange2W
+                                params.row.scoreChange2W,
+                                params.row.demand
                             ));
                             handleOpen();
                         }}
@@ -115,11 +167,12 @@ export const Data = () => {
             },
         },
         {
-            ...getColumnDef('overallRating', 'OVR', 50, 50, 'left'),
+            ...getColumnDef('overallRating', 'OVR', 60, 60, 'left'),
             description: 'The overall rating of the card',
             valueGetter: (_value, row) => {
                 return row.overallRating;
             },
+            renderCell: getRatingCellContent
         },
         {
             ...getColumnDef('primaryPosition', 'Pos', 55, 55, 'left'),
@@ -210,7 +263,15 @@ export const Data = () => {
                 </Tooltip>
             ),
             renderCell: getPercentageChangeCellContent
-        }
+        },
+        {
+            ...getColumnDef('demand', 'Demand'),
+            description: 'A measure of the demand',
+            valueGetter: (_value, row) => {
+                return row.demand;
+            },
+            renderCell: getDemandCellContent
+        },
     ];
 
     return (

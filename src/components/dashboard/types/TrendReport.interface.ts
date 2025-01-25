@@ -24,6 +24,7 @@ export class TrendReport implements TrendReportInterface {
     private readonly _overallRating: number;
     private readonly _metricsByDate: TrendReportMetricsByDate[];
     private readonly _impacts: TrendReportImpact[];
+    private readonly _isBoosted: boolean;
     private readonly _orders1H: number;
     private readonly _orders24H: number;
     private readonly _buyPrice: number;
@@ -32,9 +33,10 @@ export class TrendReport implements TrendReportInterface {
     private readonly _sellPriceChange24H: number;
     private readonly _score: number;
     private readonly _scoreChange2W: number;
+    private readonly _demand: number;
 
     constructor(Year: number, CardExternalId: string, MlbId: number, CardName: string, PrimaryPosition: string, OverallRating: number, MetricsByDate: TrendReportMetricsByDate[], Impacts: TrendReportImpact[],
-                orders1H: number, orders24H: number, buyPrice: number, buyPriceChange24H: number, sellPrice: number, sellPriceChange24H: number, score: number, scoreChange2W: number) {
+                isBoosted: boolean, orders1H: number, orders24H: number, buyPrice: number, buyPriceChange24H: number, sellPrice: number, sellPriceChange24H: number, score: number, scoreChange2W: number, demand: number) {
         this._year = Year;
         this._cardExternalId = CardExternalId;
         this._mlbId = MlbId;
@@ -43,6 +45,7 @@ export class TrendReport implements TrendReportInterface {
         this._overallRating = OverallRating;
         this._metricsByDate = MetricsByDate;
         this._impacts = Impacts;
+        this._isBoosted = isBoosted;
         this._orders1H = orders1H;
         this._orders24H = orders24H;
         this._buyPrice = buyPrice;
@@ -51,6 +54,7 @@ export class TrendReport implements TrendReportInterface {
         this._sellPriceChange24H = sellPriceChange24H;
         this._score = score;
         this._scoreChange2W = scoreChange2W;
+        this._demand = demand;
     }
 
     get impacts(): TrendReportImpact[] {
@@ -85,6 +89,10 @@ export class TrendReport implements TrendReportInterface {
         return this._year;
     }
 
+    get isBoosted(): boolean {
+        return this._isBoosted;
+    }
+
     get orders1H(): number {
         return this._orders1H;
     }
@@ -115,6 +123,10 @@ export class TrendReport implements TrendReportInterface {
 
     get scoreChange2W(): number {
         return this._scoreChange2W;
+    }
+
+    get demand(): number {
+        return this._demand;
     }
 
     public isPitcher(): boolean {
@@ -175,4 +187,5 @@ export interface TrendReportImpact {
     start: string;
     end: string;
     description: string;
+    demand: number;
 }
