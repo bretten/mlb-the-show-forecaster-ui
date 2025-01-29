@@ -102,24 +102,26 @@ export const Data = () => {
     }
 
     // Gets a GridColDef
-    const getColumnDef = (field: string, header: string, maxWidth: number = 100, minWidth: number = 100, align: GridAlignment = "right"): GridColDef => {
+    const getColumnDef = (field: string, header: string, flex: number | null = null, minWidth: number = 100, align: GridAlignment = "right"): GridColDef => {
         return {
-            field: field,
-            headerName: header,
-            headerAlign: align,
-            align: align,
-            hideSortIcons: true,
-            sortable: true,
-            filterable: false,
-            maxWidth: maxWidth,
-            minWidth: minWidth,
-            filterOperators: filterOperators
+            ...{
+                field: field,
+                headerName: header,
+                headerAlign: align,
+                align: align,
+                hideSortIcons: true,
+                sortable: true,
+                filterable: false,
+                minWidth: minWidth,
+                filterOperators: filterOperators
+            },
+            ...flex != null && {flex: flex}
         };
     }
 
     const columns: GridColDef[] = [
         {
-            ...getColumnDef('action', '', 50, 50, 'left'),
+            ...getColumnDef('action', '', 0.25, 50, 'left'),
             sortable: false,
             maxWidth: 50,
             renderCell: (params) => {
@@ -160,14 +162,14 @@ export const Data = () => {
             }
         },
         {
-            ...getColumnDef('name', 'Name', 200, 200, 'left'),
+            ...getColumnDef('name', 'Name', 1, 200, 'left'),
             description: 'The player name',
             valueGetter: (_value, row) => {
                 return row.cardName;
             },
         },
         {
-            ...getColumnDef('overallRating', 'OVR', 60, 60, 'left'),
+            ...getColumnDef('overallRating', 'OVR', 0.25, 60, 'left'),
             description: 'The overall rating of the card',
             valueGetter: (_value, row) => {
                 return row.overallRating;
@@ -175,35 +177,35 @@ export const Data = () => {
             renderCell: getRatingCellContent
         },
         {
-            ...getColumnDef('primaryPosition', 'Pos', 55, 55, 'left'),
+            ...getColumnDef('primaryPosition', 'Pos', 0.25, 55, 'left'),
             description: 'Primary position of the player card',
             valueGetter: (_value, row) => {
                 return row.primaryPosition;
             },
         },
         {
-            ...getColumnDef('orders1H', 'Orders (1H)'),
+            ...getColumnDef('orders1H', 'Orders (1H)', 0.75),
             description: 'The number of orders in the past hour',
             valueGetter: (_value, row) => {
                 return row.orders1H;
             },
         },
         {
-            ...getColumnDef('orders24H', 'Orders (1D)'),
+            ...getColumnDef('orders24H', 'Orders (1D)', 0.75),
             description: 'The number of orders in the past 24 hours',
             valueGetter: (_value, row) => {
                 return row.orders24H;
             },
         },
         {
-            ...getColumnDef('buyPrice', 'Bid'),
+            ...getColumnDef('buyPrice', 'Bid', 0.75),
             description: 'The current buy price, or the highest bid',
             valueGetter: (_value, row) => {
                 return row.buyPrice;
             },
         },
         {
-            ...getColumnDef('buyPriceChange24H', 'Bid'),
+            ...getColumnDef('buyPriceChange24H', 'Bid', 0.75),
             description: 'The percentage change of the buy price over the past 24 hours',
             valueGetter: (_value, row) => {
                 return row.buyPriceChange24H;
@@ -219,14 +221,14 @@ export const Data = () => {
             renderCell: getPercentageChangeCellContent
         },
         {
-            ...getColumnDef('sellPrice', 'Ask'),
+            ...getColumnDef('sellPrice', 'Ask', 0.75),
             description: 'The current sell price, or the lowest ask',
             valueGetter: (_value, row) => {
                 return row.sellPrice;
             },
         },
         {
-            ...getColumnDef('sellPriceChange24H', 'Ask'),
+            ...getColumnDef('sellPriceChange24H', 'Ask', 0.75),
             description: 'The percentage change of the sell price over the past 24 hours',
             valueGetter: (_value, row) => {
                 return row.sellPriceChange24H;
@@ -242,14 +244,14 @@ export const Data = () => {
             renderCell: getPercentageChangeCellContent
         },
         {
-            ...getColumnDef('score', 'Score'),
+            ...getColumnDef('score', 'Score', 0.75),
             description: "The player's performance score",
             valueGetter: (_value, row) => {
                 return row.score;
             },
         },
         {
-            ...getColumnDef('scoreChange2W', 'Score', 105, 105, 'right'),
+            ...getColumnDef('scoreChange2W', 'Score', 1, 105, 'right'),
             description: "The percentage change of the player's performance score over the past two weeks",
             valueGetter: (_value, row) => {
                 return row.scoreChange2W;
@@ -265,7 +267,7 @@ export const Data = () => {
             renderCell: getPercentageChangeCellContent
         },
         {
-            ...getColumnDef('demand', 'Demand'),
+            ...getColumnDef('demand', 'Demand', 0.5),
             description: 'A measure of the demand',
             valueGetter: (_value, row) => {
                 return row.demand;
@@ -276,7 +278,7 @@ export const Data = () => {
 
     return (
         <>
-            <DataTable title="Trend Reports" dataUrl={baseUrl + trendReportsDataUri} columns={columns}/>
+            <DataTable title="Player Trends" dataUrl={baseUrl + trendReportsDataUri} columns={columns}/>
             <div>
                 <Modal
                     open={open}

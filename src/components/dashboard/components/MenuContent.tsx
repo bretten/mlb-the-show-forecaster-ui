@@ -13,7 +13,7 @@ const unauthenticatedItems = [
 ];
 
 const authenticatedItems = [
-    {text: 'Trend Reports', icon: <TrendingUpRounded/>, path: "/"},
+    {text: 'Player Trends', icon: <TrendingUpRounded/>, path: "/"},
     {text: 'Jobs', icon: <CasesRounded/>, path: "/jobs"}
 ];
 
