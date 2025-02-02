@@ -3,13 +3,13 @@ import getDashboardTheme from "./theme/getDashboardTheme.tsx";
 import {SideMenu} from "./components/SideMenu.tsx";
 import React from "react";
 import {NavBar} from "../NavBar.tsx";
-import Stack from "@mui/material/Stack";
 import {alpha} from "@mui/material/styles";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {RequireAuth} from "../auth/RequireAuth.tsx";
 import {Jobs} from "../../pages/Jobs.tsx";
 import {Data} from "../../pages/Data.tsx";
 import {Login} from "../../pages/Login.tsx";
+import Stack from "@mui/material/Stack";
 
 export const Dashboard = () => {
     const [mode, setMode] = React.useState<PaletteMode>('light');
@@ -53,8 +53,6 @@ export const Dashboard = () => {
                     <Stack
                         spacing={2}
                         sx={{
-                            alignItems: 'center',
-                            mx: 3,
                             pb: 10,
                             mt: {xs: 8, md: 0},
                         }}
