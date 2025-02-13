@@ -4,10 +4,13 @@ import Stack from "@mui/material/Stack";
 import {useSignalR} from "../../../../contexts/SignalRContext.ts";
 import {JobType} from "../../internals/jobDefinitions.ts";
 import {JobStatus} from "./JobStatus.tsx";
+import {JobStartButton} from "./JobStartButton.tsx";
 
 export interface JobMonitorProps {
     job: JobType;
 }
+
+const allowJobChaining = import.meta.env.VITE_ALLOW_JOB_CHAINING === 'true';
 
 /**
  * Represents a component that monitors a background job/service on the server using SignalR and Websockets
@@ -38,6 +41,7 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                             <Typography variant="h4" component="p">
                                 {job.title}
                             </Typography>
+                            {!allowJobChaining && (<JobStartButton job={job}/>)}
                         </Stack>
                         <Typography variant="caption" sx={{color: 'text.secondary'}}>
                             {job.desc}

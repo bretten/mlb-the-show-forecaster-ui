@@ -11,6 +11,7 @@ import PlayCircleFilled from "@mui/icons-material/PlayCircleFilled";
 import {useAuth} from "../contexts/AuthContext.ts";
 
 const data = JobDefinitions;
+const allowJobChaining = import.meta.env.VITE_ALLOW_JOB_CHAINING === 'true';
 
 /**
  * Defines a Jobs UI component
@@ -33,7 +34,7 @@ export const Jobs = () => {
             </Typography>
 
             {
-                isAdmin &&
+                (isAdmin && allowJobChaining) &&
                 (
                     <>
                         {isReady ?

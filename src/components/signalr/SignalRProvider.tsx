@@ -10,6 +10,7 @@ import {useSeason} from "../../contexts/SeasonContext.ts";
 
 const jobsToMonitor = JobDefinitions;
 const currentStateMethodName: string = "CurrentState";
+const allowJobChaining = import.meta.env.VITE_ALLOW_JOB_CHAINING === 'true';
 
 const enqueueSnack = (message: string, variant: "default" | "error" | "success" | "warning" | "info" | undefined) => {
     enqueueSnackbar(message, {
@@ -28,7 +29,7 @@ const registerHandlers = (client: SignalRClient, jobsToMonitor: JobType[], seaso
                     enqueueSnack(`Job "${job.title}" started.`, "info");
                 } else if (jobState.isDone) {
                     enqueueSnack(`Job "${job.title}" finished.`, "success");
-                    if (job.nextJob != null) invokeJob(season, job.nextJob, () => {
+                    if (allowJobChaining && job.nextJob != null) invokeJob(season, job.nextJob, () => {
                     });
                 } else if (jobState.isError) {
                     enqueueSnack(`Job "${job.title}": ${jobState.message}`, "error");
