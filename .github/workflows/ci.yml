@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
 env:
-  VITE_AVAILABLE_SEASONS: "2024,2023"
+  VITE_AVAILABLE_SEASONS: "2025,2024,2023"
 
 jobs:
   build:
