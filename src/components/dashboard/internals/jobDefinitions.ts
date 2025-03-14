@@ -51,18 +51,25 @@ export const JobPerformanceTracker: JobType = {
     nextJob: JobRosterUpdater
 };
 export const JobCardPriceTracker: JobType = {
-    title: 'Track Prices',
+    title: 'Track Prices and Orders',
     jobUri: jobsMarketplaceUri,
     methodName: 'CardPriceTrackerJob',
-    desc: 'Checks MLB The Show servers for the current and historical prices of player cards. Dispatches price change events.',
+    desc: 'Reads prices and orders from the append-only event store and builds a historical record for each player card listing.',
     nextJob: JobPerformanceTracker
+};
+export const JobCardListingImporter: JobType = {
+    title: 'Import Listings',
+    jobUri: jobsMarketplaceUri,
+    methodName: 'CardListingImporterJob',
+    desc: 'Checks MLB The Show servers for prices and orders of player cards. Imports into an append-only event store.',
+    nextJob: JobCardPriceTracker
 };
 export const JobPlayerCardTracker: JobType = {
     title: 'Track Player Cards',
     jobUri: jobsMarketplaceUri,
     methodName: 'PlayerCardTrackerJob',
     desc: 'Checks MLB The Show servers for any new Player Cards. Dispatches new player card events.',
-    nextJob: JobCardPriceTracker
+    nextJob: JobCardListingImporter
 };
 export const JobPlayerStatusTracker: JobType = {
     title: 'Player Tracker',
@@ -74,6 +81,7 @@ export const JobPlayerStatusTracker: JobType = {
 export const JobDefinitions: JobType[] = [
     JobPlayerStatusTracker,
     JobPlayerCardTracker,
+    JobCardListingImporter,
     JobCardPriceTracker,
     JobPerformanceTracker,
     JobRosterUpdater,
