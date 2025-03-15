@@ -8,9 +8,11 @@ import Typography from '@mui/material/Typography';
 import {MenuContent} from './MenuContent';
 import {OptionsMenu} from './OptionsMenu';
 import {ToggleColorMode} from "./ToggleColorMode.tsx";
-import {SportsBaseball} from "@mui/icons-material";
+import {LoginRounded, SportsBaseball} from "@mui/icons-material";
 import {useAuth} from "../../../contexts/AuthContext.ts";
 import {SeasonSwitcher} from "../../season/SeasonSwitcher.tsx";
+import Button from "@mui/material/Button";
+import {Link} from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -121,9 +123,23 @@ export const SideMenu = ({mode, toggleColorMode}: SideMenuProps) => {
                     </Stack>
                 </>
             ) : (
-                <></>
+                <Stack
+                    direction="column"
+                    sx={{
+                        p: 2,
+                        gap: 1,
+                        alignItems: 'center',
+                        borderTop: '1px solid',
+                        borderColor: 'divider',
+                    }}
+                >
+                    <Link to={"login"}>
+                        <Button variant="outlined" fullWidth startIcon={<LoginRounded/>}>
+                            Login
+                        </Button>
+                    </Link>
+                </Stack>
             )}
-
         </Drawer>
     );
 }
