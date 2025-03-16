@@ -21,9 +21,10 @@ export const JobStartButton = ({job}: JobStartButtonProps) => {
     const {methodsToStates} = useSignalR();
     const {season} = useSeason();
     const {setIsLoading} = useLayout();
+    const jobKey = season + job.methodName;
 
     if (isAdmin) {
-        const currentState = methodsToStates[job.methodName];
+        const currentState = methodsToStates[jobKey];
         const isEnabled = currentState.isReady || currentState.isDone || currentState.isError;
         return (
             <IconButton aria-label="Start" onClick={() => {

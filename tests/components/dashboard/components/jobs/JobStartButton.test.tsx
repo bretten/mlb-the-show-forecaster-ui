@@ -57,7 +57,7 @@ describe('JobStartButton', () => {
         // Mock SignalR context
         const signalRContext = {
             methodsToStates: {
-                method1: new JobState("Done", "Job finished", null)
+                "2024method1": new JobState("Done", {"year": {"value": 2024}} as never, "Job finished", null)
             }
         };
         // Mock Layout context

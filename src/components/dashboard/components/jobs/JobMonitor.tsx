@@ -7,6 +7,7 @@ import {JobStatus} from "./JobStatus.tsx";
 import {JobStartButton} from "./JobStartButton.tsx";
 
 export interface JobMonitorProps {
+    season: number;
     job: JobType;
 }
 
@@ -14,11 +15,13 @@ const allowJobChaining = import.meta.env.VITE_ALLOW_JOB_CHAINING === 'true';
 
 /**
  * Represents a component that monitors a background job/service on the server using SignalR and Websockets
+ * @param season The current season
  * @param job The job to display
  * @constructor
  */
-export const JobMonitor = ({job}: JobMonitorProps) => {
+export const JobMonitor = ({season, job}: JobMonitorProps) => {
     const {methodsToStates} = useSignalR();
+    const jobKey = season + job.methodName;
 
     function camelCaseSplit(camelCase: string) {
         const result = camelCase.replace(/([A-Z])/g, ' $1');
@@ -48,13 +51,13 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                         </Typography>
                     </Stack>
                     <Stack spacing={2} sx={{width: '100%'}}>
-                        <JobStatus state={methodsToStates[job.methodName]}/>
+                        <JobStatus state={methodsToStates[jobKey]}/>
                         <Paper variant="outlined" square={true}
                                sx={{textAlign: 'left', padding: 1, height: 60, overflowY: 'auto'}}>
                             <Typography component="pre" sx={{fontFamily: 'monospace'}}>
                                 {
-                                    (methodsToStates[job.methodName].data != null) ? (
-                                            Object.entries(methodsToStates[job.methodName].data).map(([key, value]) => (
+                                    (methodsToStates[jobKey].data != null) ? (
+                                            Object.entries(methodsToStates[jobKey].data).map(([key, value]) => (
                                                     <Box key={key}>
                                                         <span>{camelCaseSplit(key)}:</span><span>&nbsp;</span>
                                                         <span>{value as string}</span>
@@ -64,7 +67,7 @@ export const JobMonitor = ({job}: JobMonitorProps) => {
                                             )
                                         )
                                         : (
-                                            <span>{methodsToStates[job.methodName].message}</span>
+                                            <span>{methodsToStates[jobKey].message}</span>
                                         )
                                 }
                             </Typography>

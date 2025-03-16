@@ -9,6 +9,7 @@ import {Box} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import PlayCircleFilled from "@mui/icons-material/PlayCircleFilled";
 import {useAuth} from "../contexts/AuthContext.ts";
+import {useSeason} from "../contexts/SeasonContext.ts";
 
 const data = JobDefinitions;
 const allowJobChaining = import.meta.env.VITE_ALLOW_JOB_CHAINING === 'true';
@@ -23,9 +24,15 @@ const allowJobChaining = import.meta.env.VITE_ALLOW_JOB_CHAINING === 'true';
 export const Jobs = () => {
     const {methodsToStates} = useSignalR();
     const {isAdmin} = useAuth();
+    const {season} = useSeason();
 
-    // True if the jobs can be started or false if they are already in progress
-    const isReady = Object.values(methodsToStates).every(x => x.isReady || x.isDone || x.isError);
+    // For job chaining
+    // True if all the jobs in the season are ready to run, otherwise false
+    const isReady = Object
+        .entries(methodsToStates)
+        .filter(([key]) => key.startsWith(season.toString()))
+        .map(([, value]) => value)
+        .every(x => x.isReady || x.isDone || x.isError);
 
     return (
         <Stack direction="column" sx={{gap: 1, alignItems: 'center', flexGrow: 1, p: 1}}>
@@ -64,7 +71,7 @@ export const Jobs = () => {
             >
                 {data.map((job, index) => (
                     <Grid key={index} size={{xs: 12, sm: 6}}>
-                        <JobMonitor job={job}/>
+                        <JobMonitor season={season} job={job}/>
                     </Grid>
                 ))}
             </Grid>
