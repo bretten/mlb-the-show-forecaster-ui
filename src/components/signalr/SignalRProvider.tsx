@@ -19,7 +19,7 @@ const enqueueSnack = (message: string, variant: "default" | "error" | "success" 
     });
 }
 
-const registerHandlers = (client: SignalRClient, jobsToMonitor: JobType[], season: number, setMethodsToStates: React.Dispatch<React.SetStateAction<Record<string, JobState>>>) => {
+const registerHandlers = (client: SignalRClient, jobsToMonitor: JobType[], setMethodsToStates: React.Dispatch<React.SetStateAction<Record<string, JobState>>>) => {
     client.start().then(async () => {
         // Register all job listeners after connecting
         for (const job of jobsToMonitor) {
@@ -80,13 +80,13 @@ export const SignalRProvider = ({children, client}: { children: React.ReactNode,
         if (client.isConnected()) {
             client.stop().then(() => {
                 unregisterHandlers(client, jobsToMonitor);
-                if (isAuthenticated) registerHandlers(client, jobsToMonitor, season, setMethodsToStates);
+                if (isAuthenticated) registerHandlers(client, jobsToMonitor, setMethodsToStates);
             });
             return;
         }
 
         if (isAuthenticated) {
-            registerHandlers(client, jobsToMonitor, season, setMethodsToStates);
+            registerHandlers(client, jobsToMonitor, setMethodsToStates);
         }
     }, [client, isAuthenticated, season]);
 
