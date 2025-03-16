@@ -24,24 +24,26 @@ const registerHandlers = (client: SignalRClient, jobsToMonitor: JobType[], seaso
         // Register all job listeners after connecting
         for (const job of jobsToMonitor) {
             client.registerHandler(job.methodName, (value: JobState) => {
-                const jobState = new JobState(value.state, value.message, value.data); // Need to instantiate to access methods
+                const jobState = new JobState(value.state, value.input, value.message, value.data); // Need to instantiate to access methods
+                const year = value.input["year"]["value"];
+                const jobKey = year + job.methodName;
                 if (jobState.isStarted) {
-                    enqueueSnack(`Job "${job.title}" started.`, "info");
+                    enqueueSnack(`Job "${year} - ${job.title}" started.`, "info");
                 } else if (jobState.isDone) {
-                    enqueueSnack(`Job "${job.title}" finished.`, "success");
-                    if (allowJobChaining && job.nextJob != null) invokeJob(season, job.nextJob, () => {
+                    enqueueSnack(`Job "${year} - ${job.title}" finished.`, "success");
+                    if (allowJobChaining && job.nextJob != null) invokeJob(year, job.nextJob, () => {
                     });
                 } else if (jobState.isError) {
-                    enqueueSnack(`Job "${job.title}": ${jobState.message}`, "error");
+                    enqueueSnack(`Job "${year} - ${job.title}": ${jobState.message}`, "error");
                 }
-                setMethodsToStates(prev => ({...prev, [job.methodName]: jobState}));
+                setMethodsToStates(prev => ({...prev, [jobKey]: jobState}));
             });
         }
 
         // Get the initial state from the hub and update the provider's state
         const initialState = await client.invoke(currentStateMethodName);
         Object.entries(initialState).forEach(([key, value]: [string, any]) => {
-            const jobState = new JobState(value.state, value.message, value.data as never); // Need to instantiate to access methods
+            const jobState = new JobState(value.state, value.input as never, value.message, value.data as never); // Need to instantiate to access methods
             setMethodsToStates(prev => ({...prev, [key]: jobState}));
         });
     }).catch((error) => {
@@ -62,13 +64,16 @@ const unregisterHandlers = (client: SignalRClient, jobsToMonitor: JobType[]) => 
  * @constructor
  */
 export const SignalRProvider = ({children, client}: { children: React.ReactNode, client: SignalRClient }) => {
+    const {season, availableSeasons} = useSeason();
     // A mapping of SignalR methods to their corresponding messages
     const [methodsToStates, setMethodsToStates] = useState<Record<string, JobState>>(jobsToMonitor.reduce((previousValue, job) => {
-        previousValue[job.methodName] = JobState.createReadyState();
+        // Register each available season
+        availableSeasons.forEach((s) => {
+            previousValue[s + job.methodName] = JobState.createReadyState();
+        });
         return previousValue;
     }, {} as Record<string, JobState>));
     const {isAuthenticated} = useAuth();
-    const {season} = useSeason();
 
     // When authenticated, connect to SignalR. Otherwise, disconnect
     useEffect(() => {

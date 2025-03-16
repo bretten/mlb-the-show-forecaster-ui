@@ -36,6 +36,12 @@ export class JobState {
     private readonly _state: string;
 
     /**
+     * The job input
+     * @private
+     */
+    private readonly _input: never;
+
+    /**
      * A description to accompany the state
      * @private
      */
@@ -47,14 +53,19 @@ export class JobState {
      */
     private readonly _data: never;
 
-    constructor(jobState: string, message: string, data: never) {
+    constructor(jobState: string, input: never, message: string, data: never) {
         this._state = jobState;
+        this._input = input;
         this._message = message;
         this._data = data;
     }
 
     get state(): string {
         return this._state;
+    }
+
+    get input(): never {
+        return this._input;
     }
 
     get message(): string {
@@ -86,6 +97,6 @@ export class JobState {
     }
 
     static createReadyState(): JobState {
-        return new JobState(JobStates.Ready, "...", {} as never);
+        return new JobState(JobStates.Ready, {} as never, "...", {} as never);
     }
 }
