@@ -9,11 +9,12 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import {MenuContent} from './MenuContent';
 import {useAuth} from "../../../contexts/AuthContext.ts";
 import * as React from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {ToggleColorMode} from "./ToggleColorMode.tsx";
 import {SeasonSwitcher} from "../../season/SeasonSwitcher.tsx";
 import {PaletteMode} from "@mui/material/styles";
 import {useLayout} from "../../../contexts/LayoutContext.ts";
+import {LoginRounded} from "@mui/icons-material";
 
 interface SideMenuMobileProps {
     open: boolean | undefined;
@@ -82,7 +83,7 @@ export default function SideMenuMobile({open, toggleDrawer, mode, toggleColorMod
                     )
                 }
                 <Stack sx={{flexGrow: 1}}>
-                    <MenuContent/>
+                    <MenuContent onClick={toggleDrawer(false)}/>
                     <Stack
                         direction="row"
                         sx={{
@@ -96,22 +97,29 @@ export default function SideMenuMobile({open, toggleDrawer, mode, toggleColorMod
                     </Stack>
                 </Stack>
                 <Divider/>
-                {
-                    auth.isAuthenticated ? (
-                            <>
-                                <Stack sx={{p: 2}}>
+                <Stack sx={{p: 2}}>
+                    {
+                        auth.isAuthenticated ? (
+                                <>
                                     <Button variant="outlined" fullWidth
                                             startIcon={<LogoutRoundedIcon/>}
                                             onClick={handleLogout}>
                                         Logout
                                     </Button>
-                                </Stack>
-                            </>
-                        ) :
-                        (
-                            <></>
-                        )
-                }
+                                </>
+                            ) :
+                            (
+                                <>
+                                    <Link to={"login"} onClick={toggleDrawer(false)}>
+                                        <Button variant="outlined" fullWidth
+                                                startIcon={<LoginRounded/>}>
+                                            Login
+                                        </Button>
+                                    </Link>
+                                </>
+                            )
+                    }
+                </Stack>
             </Stack>
         </Drawer>
     );

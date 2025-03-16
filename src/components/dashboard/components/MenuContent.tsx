@@ -4,12 +4,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
-import {CasesRounded, LoginRounded, TrendingUpRounded} from "@mui/icons-material";
+import {CasesRounded, TrendingUpRounded} from "@mui/icons-material";
 import {Link, useLocation} from 'react-router-dom';
 import {useAuth} from "../../../contexts/AuthContext.ts";
 
 const unauthenticatedItems = [
-    {text: 'Login', icon: <LoginRounded/>, path: "/login"},
+    {text: 'Player Trends', icon: <TrendingUpRounded/>, path: "/"},
 ];
 
 const authenticatedItems = [
@@ -17,7 +17,11 @@ const authenticatedItems = [
     {text: 'Jobs', icon: <CasesRounded/>, path: "/jobs"}
 ];
 
-export const MenuContent = () => {
+interface MenuContentProps {
+    onClick?: () => void;
+}
+
+export const MenuContent = ({onClick}: MenuContentProps) => {
     const auth = useAuth();
     const location = useLocation();
     const menuItems = auth.isAuthenticated ? authenticatedItems : unauthenticatedItems;
@@ -26,7 +30,8 @@ export const MenuContent = () => {
         <Stack sx={{flexGrow: 1, p: 1, justifyContent: 'space-between'}}>
             <List dense>
                 {menuItems.map((item, index) => (
-                    <ListItem key={index} disablePadding sx={{display: 'block'}} component={Link} to={item.path}>
+                    <ListItem key={index} disablePadding sx={{display: 'block'}} component={Link} to={item.path}
+                              onClick={onClick}>
                         <ListItemButton selected={location.pathname.endsWith(item.path)}>
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text}/>
