@@ -64,7 +64,7 @@ const unregisterHandlers = (client: SignalRClient, jobsToMonitor: JobType[]) => 
  * @constructor
  */
 export const SignalRProvider = ({children, client}: { children: React.ReactNode, client: SignalRClient }) => {
-    const {season, availableSeasons} = useSeason();
+    const {availableSeasons} = useSeason();
     // A mapping of SignalR methods to their corresponding messages
     const [methodsToStates, setMethodsToStates] = useState<Record<string, JobState>>(jobsToMonitor.reduce((previousValue, job) => {
         // Register each available season
@@ -88,7 +88,7 @@ export const SignalRProvider = ({children, client}: { children: React.ReactNode,
         if (isAuthenticated) {
             registerHandlers(client, jobsToMonitor, setMethodsToStates);
         }
-    }, [client, isAuthenticated, season]);
+    }, [client, isAuthenticated]);
 
     return <SignalRContext.Provider value={{
         methodsToStates

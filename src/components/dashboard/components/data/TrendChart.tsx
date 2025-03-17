@@ -151,13 +151,15 @@ export const TrendChart = ({trendReport}: TrendChartProps) => {
                                 itemContent: TrendChartTooltip
                             }}
                         />
-                        <ChartsReferenceLine
-                            x={endOfSeasonIndex}
-                            lineStyle={{strokeDasharray: '10 5'}}
-                            labelStyle={{fontSize: '10'}}
-                            label={`End of\nregular season`}
-                            labelAlign="start"
-                        />
+                        {endOfSeasonIndex != -1 && (
+                            <ChartsReferenceLine
+                                x={endOfSeasonIndex}
+                                lineStyle={{strokeDasharray: '10 5'}}
+                                labelStyle={{fontSize: '10'}}
+                                label={`End of\nregular season`}
+                                labelAlign="start"
+                            />
+                        )}
                     </ResponsiveChartContainer>
                 </Box>
             </Box>

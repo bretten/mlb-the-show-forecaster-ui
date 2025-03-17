@@ -72,7 +72,7 @@ export const Data = () => {
             <WideTooltip
                 title={<Box>{params.row.impacts
                     .sort((x: TrendReportImpact, y: TrendReportImpact) => new Date(y.start).getTime() - new Date(x.start).getTime())
-                    .map((i: TrendReportImpact) => (<ImpactDisplay impact={i}/>))}</Box>}>
+                    .map((i: TrendReportImpact) => (<ImpactDisplay impact={i} key={params.row.cardExternalId}/>))}</Box>}>
                 <Box>
                     {params.value > 0 && (<Box>{params.value}&nbsp;<Info/></Box>)}
                     {params.value <= 0 && (<Box>--</Box>)}
