@@ -6,7 +6,7 @@ import {
     GridColumnHeaderParams,
     GridRenderCellParams
 } from "@mui/x-data-grid";
-import {Box, Modal, Tooltip} from "@mui/material";
+import {Box, Link, Modal, Tooltip} from "@mui/material";
 import {TrendChart} from "../components/dashboard/components/data/TrendChart.tsx";
 import {useState} from "react";
 import {TrendReport, TrendReportImpact} from "../components/dashboard/types/TrendReport.interface.ts";
@@ -37,6 +37,16 @@ export const Data = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const getNameCellContent = (params: GridRenderCellParams) => {
+        return (
+            <Link
+                href={`https://mlb${params.row.year % 100}.theshow.com/items/${params.row.cardExternalId.replace(/-/g, "")}`}
+                target={"_blank"}>
+                {params.value}
+            </Link>
+        );
+    }
 
     // Cell content for percentage values that need to show green or red text for positive or negative changes
     const getPercentageChangeCellContent = (params: GridRenderCellParams) => {
@@ -72,7 +82,8 @@ export const Data = () => {
             <WideTooltip
                 title={<Box>{params.row.impacts
                     .sort((x: TrendReportImpact, y: TrendReportImpact) => new Date(y.start).getTime() - new Date(x.start).getTime())
-                    .map((i: TrendReportImpact) => (<ImpactDisplay impact={i} key={params.row.cardExternalId}/>))}</Box>}>
+                    .map((impact: TrendReportImpact, index: number) => (
+                        <ImpactDisplay impact={impact} key={`${params.row.cardExternalId}-${index}`}/>))}</Box>}>
                 <Box>
                     {params.value > 0 && (<Box>{params.value}&nbsp;<Info/></Box>)}
                     {params.value <= 0 && (<Box>--</Box>)}
@@ -167,6 +178,7 @@ export const Data = () => {
             valueGetter: (_value, row) => {
                 return row.cardName;
             },
+            renderCell: getNameCellContent
         },
         {
             ...getColumnDef('overallRating', 'OVR', 0.25, 60, 'left'),
