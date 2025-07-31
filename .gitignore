@@ -25,7 +25,8 @@ dist-ssr
 
 # Environment variables file
 *.env
-!.env.example
+!.env.prod
+!.env.demo
 
 # Build info
 *.tsbuildinfo
