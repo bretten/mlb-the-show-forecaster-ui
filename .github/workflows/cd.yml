@@ -36,7 +36,7 @@ jobs:
       - name: Zip build assets
         run: |
           cd dist
-          zip -r ../dist.zip *
+          zip -r ../dist_${{ matrix.env }}.zip *
 
       - name: Publish a release
         uses: softprops/action-gh-release@v2.0.9
